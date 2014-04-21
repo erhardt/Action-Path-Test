@@ -477,7 +477,7 @@ public class MainActivity extends FragmentActivity {
             "1",
             Double.valueOf(42.361420),
             Double.valueOf(-71.086884),
-            Float.valueOf("15.0"),
+            Float.valueOf("30.0"),
             GEOFENCE_EXPIRATION_IN_MILLISECONDS,
             // Only detect entry transitions
             Geofence.GEOFENCE_TRANSITION_ENTER);
@@ -538,7 +538,7 @@ public class MainActivity extends FragmentActivity {
             // Get latitude, longitude, and radius from the UI
             Double.valueOf("42.361202"),
             Double.valueOf("-71.088102"),
-            Float.valueOf("10.0"),
+            Float.valueOf("30.0"),
             // Set the expiration time
             GEOFENCE_EXPIRATION_IN_MILLISECONDS,
             // Detect both entry and exit transitions

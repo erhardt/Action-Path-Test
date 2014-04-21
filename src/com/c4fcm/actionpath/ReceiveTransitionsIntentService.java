@@ -88,9 +88,6 @@ public class ReceiveTransitionsIntentService extends IntentService {
 
                 String ids = TextUtils.join(GeofenceUtils.GEOFENCE_ID_DELIMITER,geofenceIds);
                 
-                //sends an intent to ResultActivity, which is not suitable for logging
-                //logTransition(getTransitionString(transition), ids);
-                
                 String transitionType = getTransitionString(transition);
 
                 //activate the logging system
@@ -129,9 +126,12 @@ public class ReceiveTransitionsIntentService extends IntentService {
     private void sendNotification(String transitionType, String[] ids) {
 
     	PendingIntent pi = getPendingIntent();
+    	
+    	// create the notification
     	Builder notificationBuilder = new Notification.Builder(this);
     	notificationBuilder.setContentTitle("ActionPath " + transitionType + " " + TextUtils.join(GeofenceUtils.GEOFENCE_ID_DELIMITER,ids))
     	// Notification title
+    	// not sure how to make this appear, or where it does appear
     	.setContentText("You have " + transitionType + " " + ids.length + "ActionPaths")
     	// you can put subject line.
     	.setSmallIcon(R.drawable.ic_launcher)
@@ -140,6 +140,7 @@ public class ReceiveTransitionsIntentService extends IntentService {
     	.addAction(
     			R.drawable.ic_action_search,
     			"Act Now", pi);
+    	
     	// Now create the Big picture notification.
     	Notification notification = new Notification.BigPictureStyle(notificationBuilder)
     	.bigPicture(
@@ -156,8 +157,9 @@ public class ReceiveTransitionsIntentService extends IntentService {
     
     //creates a PendingIntent for bigPicture notifications
     public PendingIntent getPendingIntent() {
+    	Log.v("INTENT","returning an intent for ImageChoiceActivity.class");
     	return PendingIntent.getActivity(this, 0, new Intent(this,
-    			MainActivity.class), 0);
+    			ImageChoiceActivity.class), 0);
     }
 
     public NotificationManager getNotificationManager() {

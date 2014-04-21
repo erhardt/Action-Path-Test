@@ -30,6 +30,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="ImageChoiceActivity"
+            android:label="@string/app_name" >
+            
+        </activity>
         <service android:name="com.c4fcm.actionpath.ReceiveTransitionsIntentService" 
             android:label="@string/app_name" 
             android:exported="false">
