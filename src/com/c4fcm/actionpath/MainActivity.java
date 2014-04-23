@@ -630,9 +630,9 @@ public class MainActivity extends FragmentActivity {
         mUIGeofence8 = new SimpleGeofence(
             "8",
             // Get latitude, longitude, and radius from the UI
-            Double.valueOf("42.360398"),
-            Double.valueOf("-71.087351"),
-            Float.valueOf("5.0"),
+            Double.valueOf("42.3887982"),
+            Double.valueOf("-71.0858584"),
+            Float.valueOf("50.0"),
             // Set the expiration time
             GEOFENCE_EXPIRATION_IN_MILLISECONDS,
             // Detect both entry and exit transitions
