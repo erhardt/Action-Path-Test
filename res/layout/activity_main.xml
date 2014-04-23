@@ -15,11 +15,22 @@
   limitations under the License.
 -->
 
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="5dp"
-    tools:context=".MainActivity" >
+    android:background="@color/SurveyBackgroundColor"
+    android:orientation="vertical">
 
-</ScrollView>
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:text="Action Path"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/SurveyFontColor"
+        android:textSize="42sp"
+        android:typeface="sans" />
+
+</RelativeLayout>

@@ -34,6 +34,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.c4fcm.actionpath.GeofenceUtils.REMOVE_TYPE;
@@ -166,6 +168,14 @@ public class MainActivity extends FragmentActivity {
         // Instantiate a Geofence remover
         mGeofenceRemover = new GeofenceRemover(this);
         addGeoFences();
+        
+        
+        //disallow the title bar from appearing
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        //Remove notification bar
+        //this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         // Attach to the main UI
         setContentView(R.layout.activity_main);
 
