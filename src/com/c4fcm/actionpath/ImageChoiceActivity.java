@@ -27,12 +27,13 @@ public class ImageChoiceActivity extends FragmentActivity {
 				public void onClick(View arg0) {
 					Intent i = new Intent(arg0.getContext(), SurveyThanksActivity.class);
 					startActivity(i); 
+					finish();
 				}
 			});
 	    }
 	    
 	}
-	
+
 	public void onResume(){
     	super.onResume();
     	NotificationManager notificationManager =(NotificationManager) 

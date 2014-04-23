@@ -1,6 +1,7 @@
 package com.c4fcm.actionpath;
 
 import android.app.NotificationManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
@@ -13,4 +14,10 @@ public class SurveyThanksActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 	    setContentView(R.layout.activity_survey_thanks);
 	}
+	
+	
+	public void dismissThanks(View view){
+		finish();
+	}
+	
 }
