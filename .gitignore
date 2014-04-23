@@ -5,3 +5,4 @@ gen
 project.properties
 .classpath
 *.DS_Store
+.settings/org.eclipse.jdt.core.prefs
