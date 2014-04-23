@@ -31,5 +31,7 @@
         <item name="android:textAppearance">?android:textAppearanceMedium</item>
         <item name="android:lineSpacingMultiplier">1.1</item>
     </style>
+    <color name="SurveyFontColor">#fff</color>
+    <color name="SurveyBackgroundColor">#000</color>
 
 </resources>

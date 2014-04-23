@@ -129,23 +129,26 @@ public class ReceiveTransitionsIntentService extends IntentService {
     	
     	// create the notification
     	Builder notificationBuilder = new Notification.Builder(this);
-    	notificationBuilder.setContentTitle("ActionPath " + transitionType + " " + TextUtils.join(GeofenceUtils.GEOFENCE_ID_DELIMITER,ids))
+    	notificationBuilder.setContentTitle("Action Path: Chuckie Harris Park")
+    	//notificationBuilder.setContentTitle("ActionPath " + transitionType + " " + TextUtils.join(GeofenceUtils.GEOFENCE_ID_DELIMITER,ids))
     	// Notification title
     	// not sure how to make this appear, or where it does appear
-    	.setContentText("You have " + transitionType + " " + ids.length + "ActionPaths")
+    	//.setContentText("You have " + transitionType + " " + ids.length + "ActionPaths")
     	// you can put subject line.
     	.setSmallIcon(R.drawable.ic_launcher)
     	// Set your notification icon here.
-    	.addAction(R.drawable.ic_launcher, "Respond",pi)
+    	.addAction(R.drawable.ic_notification, "Go There",pi)
     	.addAction(
-    			R.drawable.ic_action_search,
-    			"Act Now", pi);
+    			R.drawable.ic_stat_snooze,
+    			"Snooze", pi);
     	
     	// Now create the Big picture notification.
-    	Notification notification = new Notification.BigPictureStyle(notificationBuilder)
-    	.bigPicture(
+    	Notification notification = new Notification.BigTextStyle(notificationBuilder)
+    		.bigText("What's the best option for connecting the new Chuckie Harris Park to Broadway?").build();
+    //	Notification notification = new Notification.BigPictureStyle(notificationBuilder).build();
+    	/*.bigPicture(
     			BitmapFactory.decodeResource(getResources(),
-    					R.drawable.ic_notification_placeholder)).build();
+    					R.drawable.ic_notification_placeholder)).build();*/
     	// Put the auto cancel notification flag
     	notification.flags |= Notification.FLAG_AUTO_CANCEL;
     	NotificationManager notificationManager = getNotificationManager();
