@@ -26,7 +26,11 @@ GooglePlayServicesClient.OnConnectionFailedListener{
 	Location mCurrentLocation;
 	LocationClient mLocationClient;
 	
-	Stack<ArrayList<String>> queuedLogEntries;
+	Stack<ArrayList<String>> queuedLocationLogs;
+	Stack<ArrayList<String>> queuedActionLogs;
+	
+	String storagePath = "/Android/data/action_path";
+	String storageFile = "geodata.txt"; 
 
 	public LoggerService(){
 		super("LoggerService");
@@ -36,23 +40,31 @@ GooglePlayServicesClient.OnConnectionFailedListener{
 	public void onCreate(){
 		super.onCreate();
         mLocationClient = new LocationClient(this, this, this);
-        queuedLogEntries = new Stack<ArrayList<String>>();
+        queuedLocationLogs = new Stack<ArrayList<String>>();
+        queuedActionLogs = new Stack<ArrayList<String>>();
 	}
 	
 	
 	@Override
 	protected void onHandleIntent(Intent intent) {
 		// TODO Auto-generated method stub
+
 		Bundle extras = intent.getExtras();
-		String transitionType = intent.getStringExtra("transitionType");
-		String[] geofenceIds = extras.getStringArray("ids");
-		/*Log.i("TRANSITION INTENT HANDLED", "OH YEAH");
-		Log.i("TRANSITION INTENT HANDLED", transitionType);
-		Log.i("TRANSITION INTENT HANDLED", TextUtils.join(GeofenceUtils.GEOFENCE_ID_DELIMITER,geofenceIds));*/
-		for(String id: geofenceIds){
-			queueLocation(transitionType, id);
+		String logType = intent.getStringExtra("logType");
+    	Log.i("LoggerService", logType);
+		if(logType.equals("location")){
+			String transitionType = intent.getStringExtra("transitionType");
+			String[] geofenceIds = extras.getStringArray("ids");
+			for(String id: geofenceIds){
+				queueLocation(transitionType, id);
+			}
+			mLocationClient.connect();
+		}else if(logType.equals("action")){
+			String action = intent.getStringExtra("action");
+			String data = intent.getStringExtra("data");
+	    	Log.i("LoggerAction", action);
+			queueAction(action, data);
 		}
-		mLocationClient.connect();
 	}
 	
 	@Override
@@ -86,38 +98,74 @@ GooglePlayServicesClient.OnConnectionFailedListener{
     public void queueLocation(String action, String id){
     	Timestamp now = new Timestamp(System.currentTimeMillis());
     	ArrayList<String> a = new ArrayList<String>();
-    	a.add(0,action);
-    	a.add(1,id);
-    	a.add(2, now.toString());
+    	a.add(1,action);
+    	a.add(2,id);
+    	a.add(0, now.toString());
 		Log.i("QUEUEING LOCATION", action);
-    	queuedLogEntries.push(a);
+    	queuedLocationLogs.push(a);
+    }
+    
+    public void queueAction(String action, String data){
+    	Timestamp now = new Timestamp(System.currentTimeMillis());
+    	ArrayList<String> a = new ArrayList<String>();
+    	a.add(0,now.toString());
+    	a.add(1,action);
+    	a.add(2,data);
+    	Log.i("QUEUEING ACTION", action);
+    	queuedActionLogs.push(a);
+		logQueuedActions();//TODO: FIX THIS
     }
 	
 	public void logQueuedLocations(){
 		this.mCurrentLocation = this.mLocationClient.getLastLocation();
 		String longitude = String.valueOf(this.mCurrentLocation.getLongitude());
 		String latitude = String.valueOf(this.mCurrentLocation.getLatitude());
-		Iterator<ArrayList<String>> it = queuedLogEntries.iterator();
+		Iterator<ArrayList<String>> it = queuedLocationLogs.iterator();
 		while(it.hasNext())
 		{
-			ArrayList<String> locations = it.next();
-			logCurrentLocation(locations.get(0), locations.get(1),latitude, longitude, locations.get(2));
+			ArrayList<String> locationLog = it.next();
+			logCurrentLocation(locationLog.get(0), locationLog.get(1),latitude, longitude, locationLog.get(2));
 		}
-		queuedLogEntries.clear(); // TODO: could be a garbage collection issue
+		queuedLocationLogs.clear(); // TODO: could be a garbage collection issue
+	}
+	
+	//LOG ACTIONS TO A FILE
+	//QUESTION: Which actions need location data?
+	public void logQueuedActions(){
+		Iterator<ArrayList<String>> it = queuedActionLogs.iterator();
+		try{
+			String root = Environment.getExternalStorageDirectory().getAbsolutePath().toString();
+			File dir = new File(root + storagePath);    
+			Log.i("LogQueuedAction",root);
+			if(dir.mkdirs() || dir.isDirectory()){
+				FileWriter write = new FileWriter(root + storagePath + File.separator + storageFile, true);
+				while(it.hasNext())
+				{
+					ArrayList<String> action = it.next();
+					String line = action.get(0) + "," + action.get(1) + "," + action.get(2) + "\n";
+					Log.i("LogQueuedAction",line);
+					write.append(line);
+				}
+				write.flush();
+				write.close();
+			}
+		}catch(IOException e){
+			e.printStackTrace();
+		}
 	}
 
 	/// LOG CURRENT LOCATION TO A FILE
-	public void logCurrentLocation(String transition, String geofence, String latitude, String longitude, String timestamp){
+	public void logCurrentLocation(String timestamp, String transition, String latitude, String longitude, String geofence){
 		try{
 			String root = Environment.getExternalStorageDirectory().getAbsolutePath().toString();
-			File dir = new File(root + "/Android/data/action_path");    
-			Log.i("LogResultActivity",root);
+			File dir = new File(root + storagePath);    
+			Log.i("LogCurrentLocation",root);
 			if(dir.mkdirs() || dir.isDirectory()){
 
-				FileWriter write = new FileWriter(root + "/Android/data/action_path" + File.separator + "geodata.txt", true);
+				FileWriter write = new FileWriter(root + storagePath + File.separator + storageFile, true);
 				String line = geofence + "," + transition + "," + timestamp + 
 						"," + latitude + "," + longitude+"\n";
-				Log.i("LogResultActivity",line);
+				Log.i("LogCurrentLocation",line);
 				write.append(line);
 				write.flush();
 				write.close();

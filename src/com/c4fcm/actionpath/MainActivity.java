@@ -180,6 +180,15 @@ public class MainActivity extends FragmentActivity {
         setContentView(R.layout.activity_main);
 
     }
+    
+    public void recordLogAction(View view){
+    	//Log.i("MainActivityLoggingTask", "Created");
+     	Intent loggerServiceIntent = new Intent(this,LoggerService.class);
+        loggerServiceIntent.putExtra("logType", "action");
+     	loggerServiceIntent.putExtra("action", "MainActivity Clicked");
+        loggerServiceIntent.putExtra("data", "");
+    	startService(loggerServiceIntent);
+    }
 
     /*
      * Handle results returned to this Activity by other Activities started with
