@@ -66,7 +66,7 @@ public class MainActivity extends FragmentActivity {
      * a geofence indefinitely, set the expiration time to
      * Geofence#NEVER_EXPIRE.
      */
-    private static final long GEOFENCE_EXPIRATION_IN_HOURS = 12;
+    private static final long GEOFENCE_EXPIRATION_IN_HOURS = 168;
     private static final long GEOFENCE_EXPIRATION_IN_MILLISECONDS =
             GEOFENCE_EXPIRATION_IN_HOURS * DateUtils.HOUR_IN_MILLIS;
 
@@ -179,6 +179,12 @@ public class MainActivity extends FragmentActivity {
         // Attach to the main UI
         setContentView(R.layout.activity_main);
 
+    }
+    
+    public void downloadSpreadsheetData(View view){
+    	Log.i("MainActivity", "launching data download intent");
+    	Intent synchronizeDataIntent = new Intent(this,SynchronizeDataService.class);
+    	startService(synchronizeDataIntent);
     }
     
     public void recordLogAction(View view){   	

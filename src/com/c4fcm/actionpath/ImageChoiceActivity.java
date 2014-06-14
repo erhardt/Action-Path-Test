@@ -31,7 +31,6 @@ public class ImageChoiceActivity extends FragmentActivity {
 				}
 			});
 	    }
-	    
 	}
 
 	public void onResume(){
