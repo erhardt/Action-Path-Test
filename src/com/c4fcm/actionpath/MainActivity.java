@@ -181,12 +181,21 @@ public class MainActivity extends FragmentActivity {
 
     }
     
-    public void recordLogAction(View view){
+    public void recordLogAction(View view){   	
+    	// CREATE A NON LOCATION ACTION LOG
     	//Log.i("MainActivityLoggingTask", "Created");
      	Intent loggerServiceIntent = new Intent(this,LoggerService.class);
         loggerServiceIntent.putExtra("logType", "action");
      	loggerServiceIntent.putExtra("action", "MainActivity Clicked");
         loggerServiceIntent.putExtra("data", "");
+    	startService(loggerServiceIntent);
+    	
+    	// CREATE A LOCATION LOG
+    	String[] geofenceIds = {"5","6"};
+    	loggerServiceIntent = new Intent(this,LoggerService.class);
+    	loggerServiceIntent.putExtra("logType", "location");
+    	loggerServiceIntent.putExtra("transitionType", "entered");
+        loggerServiceIntent.putExtra("ids", geofenceIds);
     	startService(loggerServiceIntent);
     }
 

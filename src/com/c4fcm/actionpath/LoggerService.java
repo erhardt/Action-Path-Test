@@ -98,9 +98,9 @@ GooglePlayServicesClient.OnConnectionFailedListener{
     public void queueLocation(String action, String id){
     	Timestamp now = new Timestamp(System.currentTimeMillis());
     	ArrayList<String> a = new ArrayList<String>();
+    	a.add(0, now.toString());
     	a.add(1,action);
     	a.add(2,id);
-    	a.add(0, now.toString());
 		Log.i("QUEUEING LOCATION", action);
     	queuedLocationLogs.push(a);
     }
