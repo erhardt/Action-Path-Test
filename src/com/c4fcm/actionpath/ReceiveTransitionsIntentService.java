@@ -92,7 +92,8 @@ public class ReceiveTransitionsIntentService extends IntentService {
 
                 //activate the logging system
             	Intent loggerServiceIntent = new Intent(this,LoggerService.class);
-                loggerServiceIntent.putExtra("transitionType", transitionType);
+            	loggerServiceIntent.putExtra("logType", "location");
+            	loggerServiceIntent.putExtra("transitionType", transitionType);
                 loggerServiceIntent.putExtra("ids", geofenceIds);
             	startService(loggerServiceIntent);
                                 

@@ -43,6 +43,7 @@
             android:layout_width="140dp"
             android:layout_height="140dp"
             android:layout_gravity="center_horizontal"
+            android:onClick="downloadSpreadsheetData"
             android:scaleType="fitXY"
             android:src="@drawable/ic_launcher" />
 
@@ -52,6 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="@dimen/margin_large"
+            android:onClick="recordLogAction"
             android:src="@drawable/civicmedialogo" />
 
     </LinearLayout>
