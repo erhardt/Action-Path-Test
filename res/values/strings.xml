@@ -119,5 +119,19 @@
     <!--  Buttons -->
     <string name="snooze">Popup!</string>
     <string name="dismiss">Back to Main</string>
+    <string name="active_question">What\'s the best option for connecting the new Chuckie Harris Park to Broadway?</string>
+    <string-array name="active_responses">
+        <item >@string/active_response_a</item>
+        <item >@string/active_response_b</item>
+        <item >@string/active_response_c</item>
+        <item >@string/active_response_d</item>
+        <item >@string/active_response_e</item>
+    </string-array>
+    <string name="active_response_a">A. Street paint at intersection</string>
+    <string name="active_response_b">B. Gate over Cross St</string>
+    <string name="active_response_c">C. Grass corridor by Senior Ctr</string>
+    <string name="active_response_d"/>
+    <string name="active_response_e"/>
+    <string name="active_action">Chuckie Harris Park</string>
     
 </resources>

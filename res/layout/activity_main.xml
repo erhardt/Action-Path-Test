@@ -31,6 +31,7 @@
             android:id="@+id/textView1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_medium"
             android:text="Action Path"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/SurveyFontColor"
@@ -39,8 +40,8 @@
 
         <ImageView
             android:id="@+id/imageView1"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
             android:layout_gravity="center_horizontal"
             android:scaleType="fitXY"
             android:src="@drawable/ic_launcher" />

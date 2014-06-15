@@ -129,7 +129,7 @@ public class ReceiveTransitionsIntentService extends IntentService {
     	
     	// create the notification
     	Builder notificationBuilder = new Notification.Builder(this);
-    	notificationBuilder.setContentTitle("Action Path: Chuckie Harris Park")
+    	notificationBuilder.setContentTitle("Action: " + getString(R.string.active_action))
     	//notificationBuilder.setContentTitle("ActionPath " + transitionType + " " + TextUtils.join(GeofenceUtils.GEOFENCE_ID_DELIMITER,ids))
     	// Notification title
     	// not sure how to make this appear, or where it does appear
@@ -144,7 +144,7 @@ public class ReceiveTransitionsIntentService extends IntentService {
     	
     	// Now create the Big picture notification.
     	Notification notification = new Notification.BigTextStyle(notificationBuilder)
-    		.bigText("What's the best option for connecting the new Chuckie Harris Park to Broadway?").build();
+    		.bigText(getString(R.string.active_question)).build();
     //	Notification notification = new Notification.BigPictureStyle(notificationBuilder).build();
     	/*.bigPicture(
     			BitmapFactory.decodeResource(getResources(),
