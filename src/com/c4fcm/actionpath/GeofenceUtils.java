@@ -16,6 +16,8 @@
 
 package com.c4fcm.actionpath;
 
+import android.text.format.DateUtils;
+
 /**
  * This class defines constants used by location sample apps.
  */
@@ -100,6 +102,7 @@ public final class GeofenceUtils {
     public static final float INVALID_FLOAT_VALUE = -999.0f;
 
     public static final int INVALID_INT_VALUE = -999;
+	public static final String INVALID_STRING_VALUE = "0";
 
     /*
      * Constants used in verifying the correctness of input values
@@ -114,6 +117,10 @@ public final class GeofenceUtils {
 
     public static final float MIN_RADIUS = 1f;
 
+    //IntentFilter for MainActivity Broadcast Receiver for sync tasks
+    public static final String UPDATE_GEOFENCES = "com.c4fcm.actionpath.UPDATE_GEOFENCES";    
+
+    
     /*
      * Define a request code to send to Google Play services
      * This code is returned in Activity.onActivityResult
@@ -135,6 +142,9 @@ public final class GeofenceUtils {
     public static final String EXTRA_TIMER = "com.c4fcm.actionpath.EXTRA_TIMER";
     public static final int NOTIFICATION_ID = 001;
     public static final String DEBUG_TAG = "ActionPath";
-    
+
+    public static final long GEOFENCE_EXPIRATION_IN_HOURS = 168;
+    public static final long GEOFENCE_EXPIRATION_IN_MILLISECONDS =
+            GEOFENCE_EXPIRATION_IN_HOURS * DateUtils.HOUR_IN_MILLIS;
     
 }

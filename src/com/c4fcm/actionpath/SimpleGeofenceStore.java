@@ -16,9 +16,13 @@
 
 package com.c4fcm.actionpath;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.preference.PreferenceManager;
 
 /**
  * Storage for geofence values, implemented in SharedPreferences.
@@ -31,15 +35,21 @@ public class SimpleGeofenceStore {
     private final SharedPreferences mPrefs;
 
     // The name of the resulting SharedPreferences
-    private static final String SHARED_PREFERENCE_NAME =
-                    MainActivity.class.getSimpleName();
+    private static final String SHARED_PREFERENCE_NAME = "ActionPathPreferences";
+                    //MainActivity.class.getSimpleName();
+    
+    private ArrayList<String> geofenceStoreKeys;
 
     // Create the SharedPreferences storage with private access only
     public SimpleGeofenceStore(Context context) {
+    	
+    	
+    	//mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         mPrefs =
                 context.getSharedPreferences(
                         SHARED_PREFERENCE_NAME,
                         Context.MODE_PRIVATE);
+        geofenceStoreKeys = new ArrayList<String>();
     }
 
     /**
@@ -108,7 +118,35 @@ public class SimpleGeofenceStore {
             return null;
         }
     }
+    
+    /**
+     *  Push a geofence into storage
+     * @param geofence The {@link SimpleGeofence} containing the
+     * values you want to save in SharedPreferences
+     */
+    public void pushGeofence(SimpleGeofence geofence){
+    	Editor editor = mPrefs.edit();
+    	String maxFenceKey = GeofenceUtils.KEY_PREFIX + "_MAXFENCE";
+        String maxFence = mPrefs.getString(maxFenceKey, GeofenceUtils.INVALID_STRING_VALUE);
+             
+        String newFenceID=Integer.toString(Integer.parseInt(maxFence)+1);
+        
+        geofence.setId(newFenceID);
 
+        editor.putString(maxFenceKey, newFenceID);
+        editor.commit();
+   
+        geofenceStoreKeys.add(newFenceID);
+        setGeofence(newFenceID, geofence);
+    }
+    
+    /**
+     * Get a list of geofence keys
+     */
+    public ArrayList<String> getGeofenceStoreKeys(){
+    	return geofenceStoreKeys;
+    }
+    
     /**
      * Save a geofence.
 
@@ -147,6 +185,9 @@ public class SimpleGeofenceStore {
 
         // Commit the changes
         editor.commit();
+        if(!geofenceStoreKeys.contains(id)){
+        	geofenceStoreKeys.add(id);
+        }
     }
 
     public void clearGeofence(String id) {
@@ -159,6 +200,7 @@ public class SimpleGeofenceStore {
         editor.remove(getGeofenceFieldKey(id, GeofenceUtils.KEY_EXPIRATION_DURATION));
         editor.remove(getGeofenceFieldKey(id, GeofenceUtils.KEY_TRANSITION_TYPE));
         editor.commit();
+        geofenceStoreKeys.remove(id);
     }
 
     /**

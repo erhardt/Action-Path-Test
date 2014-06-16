@@ -108,7 +108,8 @@ public class GeofenceRequester
          * connection is available.
          */
         mCurrentGeofences = (ArrayList<Geofence>) geofences;
-
+        Log.i("AddGeofences",Integer.toString(mCurrentGeofences.size()));
+        
         // If a request is not already in progress
         if (!mInProgress) {
 

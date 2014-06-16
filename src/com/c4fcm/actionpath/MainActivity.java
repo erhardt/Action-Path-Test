@@ -50,6 +50,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * UI handler for the Location Services Geofence sample app.
  * Allow input of latitude, longitude, and radius for two geofences.
@@ -86,19 +90,10 @@ public class MainActivity extends FragmentActivity {
     private GeofenceRequester mGeofenceRequester;
     // Remove geofences handler
     private GeofenceRemover mGeofenceRemover;
- 
-    /*
-     * Internal lightweight geofence objects for geofence 1 and 2
-     */
-    private SimpleGeofence mUIGeofence1;
-    private SimpleGeofence mUIGeofence2;
-    private SimpleGeofence mUIGeofence3;
-    private SimpleGeofence mUIGeofence4;
-    private SimpleGeofence mUIGeofence5;
-    private SimpleGeofence mUIGeofence6;
-    private SimpleGeofence mUIGeofence7;
-    private SimpleGeofence mUIGeofence8;
 
+    // list of geofences currently active
+    private ArrayList<SimpleGeofence> mUIGeofences;
+    
     // decimal formats for latitude, longitude, and radius
     private DecimalFormat mLatLngFormat;
     private DecimalFormat mRadiusFormat;
@@ -108,14 +103,17 @@ public class MainActivity extends FragmentActivity {
      * IntentService that receives geofence transition events
      */
     private GeofenceSampleReceiver mBroadcastReceiver;
-
     // An intent filter for the broadcast receiver
     private IntentFilter mIntentFilter;
 
+    // broadcast intent action to receive calls from SynchronizeDataService
+    private SynchronizeDataReceiver mSyncDataReceiver;
+    private IntentFilter			mSyncIntentFilter;
+
+
     // Store the list of geofences to remove
-    private List<String> mGeofenceIdsToRemove;
-
-
+    private List<String> mGeofenceIdsToRemove;    
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -140,6 +138,9 @@ public class MainActivity extends FragmentActivity {
 
         // Create a new broadcast receiver to receive updates from the listeners and service
         mBroadcastReceiver = new GeofenceSampleReceiver();
+        
+        // Create a new broadcast receiver to receive updates from SynchronizeDataService
+        mSyncDataReceiver = new SynchronizeDataReceiver();
 
         // Create an intent filter for the broadcast receiver
         mIntentFilter = new IntentFilter();
@@ -155,9 +156,12 @@ public class MainActivity extends FragmentActivity {
 
         // All Location Services sample apps use this category
         mIntentFilter.addCategory(GeofenceUtils.CATEGORY_LOCATION_SERVICES);
+        
+        mSyncIntentFilter = new IntentFilter();
+        mSyncIntentFilter.addAction(GeofenceUtils.UPDATE_GEOFENCES);
 
         // Instantiate a new geofence storage area
-        mPrefs = new SimpleGeofenceStore(this);
+        mPrefs = new SimpleGeofenceStore(this.getApplicationContext());
 
         // Instantiate the current List of geofences
         mCurrentGeofences = new ArrayList<Geofence>();
@@ -167,8 +171,11 @@ public class MainActivity extends FragmentActivity {
 
         // Instantiate a Geofence remover
         mGeofenceRemover = new GeofenceRemover(this);
-        addGeoFences();
         
+        //instantiate list of geofences
+        mUIGeofences = new ArrayList<SimpleGeofence>();
+        
+      //  addGeoFences();
         
         //disallow the title bar from appearing
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -178,11 +185,19 @@ public class MainActivity extends FragmentActivity {
 
         // Attach to the main UI
         setContentView(R.layout.activity_main);
+       
+        Log.i("MainActivity.OnCreate", "synchronizeDataService");
+        synchronizeDataService();
 
     }
     
-    public void downloadSpreadsheetData(View view){
+    public void activateDownloadedGeofences(View view){
     	Log.i("MainActivity", "launching data download intent");
+        Log.i("MAINmPrefs",Integer.toString(mPrefs.getGeofenceStoreKeys().size()));
+    	addGeoFences();
+    }
+    
+    public void synchronizeDataService(){
     	Intent synchronizeDataIntent = new Intent(this,SynchronizeDataService.class);
     	startService(synchronizeDataIntent);
     }
@@ -282,19 +297,19 @@ public class MainActivity extends FragmentActivity {
         super.onResume();
         // Register the broadcast receiver to receive status updates
         LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver, mIntentFilter);
+        LocalBroadcastManager.getInstance(this).registerReceiver(mSyncDataReceiver, mSyncIntentFilter);
+
         /*
          * Get existing geofences from the latitude, longitude, and
          * radius values stored in SharedPreferences. If no values
          * exist, null is returned.
          */
-        mUIGeofence1 = mPrefs.getGeofence("1");
-        mUIGeofence2 = mPrefs.getGeofence("2");
-        mUIGeofence3 = mPrefs.getGeofence("3");
-        mUIGeofence4 = mPrefs.getGeofence("4");
-        mUIGeofence5 = mPrefs.getGeofence("5");
-        mUIGeofence6 = mPrefs.getGeofence("6");
-        mUIGeofence7 = mPrefs.getGeofence("7");
-        mUIGeofence8 = mPrefs.getGeofence("8");
+        
+        mUIGeofences.clear();
+        for (String s : mPrefs.getGeofenceStoreKeys()){
+        	mUIGeofences.add(mPrefs.getGeofence(s));
+        }
+ 
     }
 
     /*
@@ -307,42 +322,18 @@ public class MainActivity extends FragmentActivity {
         return true;
 
     }
-    /*
-     * Respond to menu item selections
-     */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
-    	/*        switch (item.getItemId()) {
-
-            // Request to clear the geofence1 settings in the UI
-            case R.id.menu_item_clear_geofence1:
-                mLatitude1.setText(GeofenceUtils.EMPTY_STRING);
-                mLongitude1.setText(GeofenceUtils.EMPTY_STRING);
-                mRadius1.setText(GeofenceUtils.EMPTY_STRING);
-                return true;
-
-            // Pass through any other request
-            default:
-                return super.onOptionsItemSelected(item);
-        }*/
-    	return super.onOptionsItemSelected(item);
-    }
-
+    
     /*
      * Save the current geofence settings in SharedPreferences.
      */
     @Override
     protected void onPause() {
         super.onPause();
-        mPrefs.setGeofence("1", mUIGeofence1);
-        mPrefs.setGeofence("2", mUIGeofence2);
-        mPrefs.setGeofence("3", mUIGeofence3);
-        mPrefs.setGeofence("4", mUIGeofence4);
-        mPrefs.setGeofence("5", mUIGeofence5);
-        mPrefs.setGeofence("6", mUIGeofence6);
-        mPrefs.setGeofence("7", mUIGeofence7);
-        mPrefs.setGeofence("8", mUIGeofence8);
+        
+        for(SimpleGeofence g: mUIGeofences){
+        	mPrefs.setGeofence(g.getId(),g);
+        }
+        
     }
 
     /**
@@ -507,179 +498,21 @@ public class MainActivity extends FragmentActivity {
          * 
          * #1 --> Last lamppost before you get to medical building pass through
          */
-        mUIGeofence1 = new SimpleGeofence(
-            "1",
+        /*SimpleGeofence mUIGeofence1 = new SimpleGeofence(
             Double.valueOf(42.361420),
             Double.valueOf(-71.086884),
             Float.valueOf("30.0"),
             GEOFENCE_EXPIRATION_IN_MILLISECONDS,
             // Only detect entry transitions
-            Geofence.GEOFENCE_TRANSITION_ENTER);
+            Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT);
 
         // Store this flat version in SharedPreferences
-        mPrefs.setGeofence("1", mUIGeofence1);
-
-        /*
-         * Create a version of geofence 2 that is "flattened" into individual fields. This
-         * allows it to be stored in SharedPreferences.
-         * 
-         * #2 --> Tree in front of Old Media Lab entrance on medical building side
-         */
-        mUIGeofence2 = new SimpleGeofence(
-            "2",
-            // Get latitude, longitude, and radius from the UI
-            Double.valueOf("42.361161"),
-            Double.valueOf("-71.087337"),
-            Float.valueOf("20.0"),
-            // Set the expiration time
-            GEOFENCE_EXPIRATION_IN_MILLISECONDS,
-            // Detect both entry and exit transitions
-            Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT
-            );
-
-        // Store this flat version in SharedPreferences
-        mPrefs.setGeofence("2", mUIGeofence2);
+        mPrefs.pushGeofence(mUIGeofence1);*/
         
-        /*
-         * Create a version of geofence 2 that is "flattened" into individual fields. This
-         * allows it to be stored in SharedPreferences.
-         * 
-         * #3 --> Corner post of old media lab overhang on medical building side
-         */
-        mUIGeofence3 = new SimpleGeofence(
-            "3",
-            // Get latitude, longitude, and radius from the UI
-            Double.valueOf("42.361136"),
-            Double.valueOf("-71.087484"),
-            Float.valueOf("20.0"),
-            // Set the expiration time
-            GEOFENCE_EXPIRATION_IN_MILLISECONDS,
-            // Detect both entry and exit transitions
-            Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT
-            );
+        for(String gKey: mPrefs.getGeofenceStoreKeys()){
+        	mCurrentGeofences.add(mPrefs.getGeofence(gKey).toGeofence());
+        }
 
-        // Store this flat version in SharedPreferences
-        mPrefs.setGeofence("3", mUIGeofence3);
-        
-        /*
-         * Create a version of geofence 2 that is "flattened" into individual fields. This
-         * allows it to be stored in SharedPreferences.
-         * 
-         * #4 --> Tree near overhang on Ames Street side of old building
-         */
-        mUIGeofence4 = new SimpleGeofence(
-            "4",
-            // Get latitude, longitude, and radius from the UI
-            Double.valueOf("42.361202"),
-            Double.valueOf("-71.088102"),
-            Float.valueOf("30.0"),
-            // Set the expiration time
-            GEOFENCE_EXPIRATION_IN_MILLISECONDS,
-            // Detect both entry and exit transitions
-            Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT
-            );
-
-        // Store this flat version in SharedPreferences
-        mPrefs.setGeofence("4", mUIGeofence4);
-        
-        /*
-         * Create a version of geofence 2 that is "flattened" into individual fields. This
-         * allows it to be stored in SharedPreferences.
-         * 
-         * #5 --> Front door on New media lab building on medical building side
-         */
-        mUIGeofence5 = new SimpleGeofence(
-            "5",
-            // Get latitude, longitude, and radius from the UI
-            Double.valueOf("42.360441"),
-            Double.valueOf("-71.086954"),
-            Float.valueOf("20.0"),
-            // Set the expiration time
-            GEOFENCE_EXPIRATION_IN_MILLISECONDS,
-            // Detect both entry and exit transitions
-            Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT
-            );
-
-        // Store this flat version in SharedPreferences
-        mPrefs.setGeofence("5", mUIGeofence5);
-        
-        /*
-         * Create a version of geofence 2 that is "flattened" into individual fields. This
-         * allows it to be stored in SharedPreferences.
-         * 
-         * #6 --> First tree near bike racks medical building side heading toward food trucks
-         */
-        mUIGeofence6 = new SimpleGeofence(
-            "6",
-            // Get latitude, longitude, and radius from the UI
-            Double.valueOf("42.360544"),
-            Double.valueOf("-71.086702"),
-            Float.valueOf("20.0"),
-            // Set the expiration time
-            GEOFENCE_EXPIRATION_IN_MILLISECONDS,
-            // Detect both entry and exit transitions
-            Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT
-            );
-
-        // Store this flat version in SharedPreferences
-        mPrefs.setGeofence("6", mUIGeofence6);
-        
-        /*
-         * Create a version of geofence 2 that is "flattened" into individual fields. This
-         * allows it to be stored in SharedPreferences.
-         * 
-         * #7 --> Walkway from E15 -> E14 on civic side
-         */
-        mUIGeofence7 = new SimpleGeofence(
-            "7",
-            // Get latitude, longitude, and radius from the UI
-            Double.valueOf("42.360677"),
-            Double.valueOf("-71.087477"),
-            Float.valueOf("5.0"),
-            // Set the expiration time
-            GEOFENCE_EXPIRATION_IN_MILLISECONDS,
-            // Detect both entry and exit transitions
-            Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT
-            );
-
-        // Store this flat version in SharedPreferences
-        mPrefs.setGeofence("7", mUIGeofence7);
-        
-        /*
-         * Create a version of geofence 2 that is "flattened" into individual fields. This
-         * allows it to be stored in SharedPreferences.
-         * 
-         * #8 --> In front of elevators in E14
-         */
-        mUIGeofence8 = new SimpleGeofence(
-            "8",
-            // Get latitude, longitude, and radius from the UI
-            Double.valueOf("42.3887982"),
-            Double.valueOf("-71.0858584"),
-            Float.valueOf("50.0"),
-            // Set the expiration time
-            GEOFENCE_EXPIRATION_IN_MILLISECONDS,
-            // Detect both entry and exit transitions
-            Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT
-            );
-
-        // Store this flat version in SharedPreferences
-        mPrefs.setGeofence("8", mUIGeofence8);
-
-        /*
-         * Add Geofence objects to a List. toGeofence()
-         * creates a Location Services Geofence object from a
-         * flat object
-         */
-        mCurrentGeofences.add(mUIGeofence1.toGeofence());
-        mCurrentGeofences.add(mUIGeofence2.toGeofence());
-        mCurrentGeofences.add(mUIGeofence3.toGeofence());
-        mCurrentGeofences.add(mUIGeofence4.toGeofence());
-        mCurrentGeofences.add(mUIGeofence5.toGeofence());
-        mCurrentGeofences.add(mUIGeofence6.toGeofence());
-        mCurrentGeofences.add(mUIGeofence7.toGeofence());
-        mCurrentGeofences.add(mUIGeofence8.toGeofence());
-        
 
         // Start the request. Fail if there's already a request in progress
         try {
@@ -692,6 +525,41 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
+    /*
+     * Define a broadcast receiver that receives updates from 
+     * SynchronizeDataService and adds or removes geofences as needed
+     */
+    public class SynchronizeDataReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equals(GeofenceUtils.UPDATE_GEOFENCES)) {
+            	
+            	//TODO: delete old geofences, or only create new ones
+            	
+                String serviceJsonString = intent.getStringExtra("json");            
+                //Log.i("SynchronizeDataReceiver",serviceJsonString);
+                try{
+                	JSONArray geofenceData = new JSONArray(serviceJsonString);
+                    for(int i =0; i< geofenceData.length(); i++){
+                    	JSONObject row = geofenceData.getJSONObject(i);
+              	       	SimpleGeofence sg = new SimpleGeofence(
+	      	              row.getDouble("lat"),
+	      	              row.getDouble("long"),
+	      	              Float.valueOf(row.getString("radius")),
+	      	              GeofenceUtils.GEOFENCE_EXPIRATION_IN_MILLISECONDS,
+	      	              Geofence.GEOFENCE_TRANSITION_ENTER );//| Geofence.GEOFENCE_TRANSITION_EXIT);
+              	       	mPrefs.pushGeofence(sg);
+              	       	Log.i("MainActivity","SynchronizeDataReceiver: pushed downloaded geofences into list of geofences. Waiting for them to be added");
+                    }
+
+                }catch(JSONException e){
+                	Log.i("SynchronizeDataReceiver",e.getStackTrace().toString());
+                }
+            }
+        }
+    };
+    
 
     /**
      * Define a Broadcast receiver that receives updates from connection listeners and

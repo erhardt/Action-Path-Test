@@ -23,10 +23,10 @@ import com.google.android.gms.location.Geofence;
  */
 public class SimpleGeofence {
     // Instance variables
-    private final String mId;
-    private final double mLatitude;
-    private final double mLongitude;
-    private final float mRadius;
+    private String mId;
+    private double mLatitude;
+    private double mLongitude;
+    private float mRadius;
     private long mExpirationDuration;
     private int mTransitionType;
 
@@ -40,17 +40,39 @@ public class SimpleGeofence {
      * @param transition Type of Geofence transition. The value is not checked for validity.
      */
     public SimpleGeofence(
-            String geofenceId,
+           String geofenceId,
             double latitude,
             double longitude,
             float radius,
             long expiration,
             int transition) {
-        // Set the instance fields from the constructor
+    	initializeFields(latitude,longitude,radius,expiration,transition);
+    	this.mId=geofenceId;
+    }
+    
+    /**
+     * @param latitude Latitude of the Geofence's center. The value is not checked for validity.
+     * @param longitude Longitude of the Geofence's center. The value is not checked for validity.
+     * @param radius Radius of the geofence circle. The value is not checked for validity
+     * @param expiration Geofence expiration duration in milliseconds The value is not checked for
+     * validity.
+     * @param transition Type of Geofence transition. The value is not checked for validity.
+     */
+    public SimpleGeofence(
+            double latitude,
+            double longitude,
+            float radius,
+            long expiration,
+            int transition) {
+        initializeFields(latitude,longitude,radius,expiration,transition);
+    }
 
-        // An identifier for the geofence
-        this.mId = geofenceId;
-
+    private void initializeFields(
+            double latitude,
+            double longitude,
+            float radius,
+            long expiration,
+            int transition){
         // Center of the geofence
         this.mLatitude = latitude;
         this.mLongitude = longitude;
@@ -64,14 +86,21 @@ public class SimpleGeofence {
         // Transition type
         this.mTransitionType = transition;
     }
-    // Instance field getters
-
+    
     /**
      * Get the geofence ID
      * @return A SimpleGeofence ID
      */
     public String getId() {
         return mId;
+    }
+    
+	/**
+	 * Set the geofence ID
+	 * @param geofence id
+	 */
+    public void setId(String id) {
+        mId = id;
     }
 
     /**

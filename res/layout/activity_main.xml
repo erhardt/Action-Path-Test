@@ -42,7 +42,7 @@
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_gravity="center_horizontal"
-            android:onClick="downloadSpreadsheetData"
+            android:onClick="activateDownloadedGeofences"
             android:scaleType="fitXY"
             android:src="@drawable/ic_launcher" />
 
