@@ -18,7 +18,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="0dp"
     android:background="@color/SurveyBackgroundColor"
     tools:context=".ImageChoiceActivity" >
 
@@ -27,67 +26,156 @@
         android:layout_height="wrap_content"
         android:background="@color/SurveyBackgroundColor"
         android:orientation="vertical"
-        android:padding="5dp" >
+        android:padding="@dimen/margin_small" >
 
-        <TextView
-            android:id="@+id/textViewSurveyQuestion"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="What&apos;s the best option for connecting the new Chuckie Harris Park to Broadway?"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/SurveyFontColor"
-            android:textStyle="bold" />
+            android:layout_marginBottom="@dimen/margin_medium"
+            android:layout_marginTop="@dimen/margin_medium"
+            android:orientation="vertical" >
 
-        <TextView
-            android:id="@+id/textViewSurveyFirstOption"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_small"
-            android:text="A. Street paint at intersection"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/SurveyFontColor" />
+            <TextView
+                android:id="@+id/textViewSurveyQuestion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/active_question"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/SurveyFontColor"
+                android:textStyle="bold" />
 
-        <ImageButton
-            android:id="@+id/surveyFirstImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/SurveyBackgroundColor"
-            android:scaleType="fitCenter"
-            android:src="@drawable/option1_streetpaint" />
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/textViewSurveySecondOption"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_small"
-            android:text="B. Gate over Cross St"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/SurveyFontColor" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:orientation="vertical" >
 
-        <ImageButton
-            android:id="@+id/surveySecondImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/SurveyBackgroundColor"
-            android:scaleType="fitCenter"
-            android:src="@drawable/option2_gate" />
+            <TextView
+                android:id="@+id/textViewSurveyFirstOption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_tiny"
+                android:layout_marginTop="@dimen/margin_small"
+                android:text="@string/active_response_a"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/SurveyFontColor" />
 
-        <TextView
-            android:id="@+id/textViewSurveyThirdOption"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_small"
-            android:text="C. Grassy corridor along Cross St Senior Center"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/SurveyFontColor" />
+            <ImageButton
+                android:id="@+id/surveyFirstImage"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="@color/SurveyBackgroundColor"
+                android:scaleType="fitStart"
+                android:src="@drawable/option1_streetpaint" />
 
-        <ImageButton
-            android:id="@+id/surveyThirdImage"
-            android:layout_width="wrap_content"
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/textViewSurveySecondOption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_tiny"
+                android:layout_marginTop="@dimen/margin_small"
+                android:text="@string/active_response_b"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/SurveyFontColor" />
+
+            <ImageButton
+                android:id="@+id/surveySecondImage"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="@color/SurveyBackgroundColor"
+                android:scaleType="fitStart"
+                android:src="@drawable/option2_gate" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/textViewSurveyThirdOption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_tiny"
+                android:layout_marginTop="@dimen/margin_small"
+                android:text="@string/active_response_c"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/SurveyFontColor" />
+
+            <ImageButton
+                android:id="@+id/surveyThirdImage"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="@color/SurveyBackgroundColor"
+                android:scaleType="fitStart"
+                android:src="@drawable/option3_grass" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/SurveyBackgroundColor"
-            android:scaleType="centerInside"
-            android:src="@drawable/option3_grass" />
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/textViewSurveyFourthOption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_tiny"
+                android:layout_marginTop="@dimen/margin_small"
+                android:text="@string/active_response_d"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/SurveyFontColor" />
+
+            <Button
+                android:id="@+id/surveyFourthImage"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="@color/SurveyButtonColor"
+                android:ellipsize="none"
+                android:scaleType="fitStart"
+                android:text="@string/survey_button_text"
+                android:textColor="@color/SurveyButtonFontColor"
+                android:textStyle="italic" />
+
+        </LinearLayout>
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone" >
+
+            <TextView
+                android:id="@+id/textViewSurveyFifthOption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_tiny"
+                android:layout_marginTop="@dimen/margin_small"
+                android:text="@string/active_response_e"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/SurveyFontColor" />
+
+            <ImageButton
+                android:id="@+id/surveyFifthImage"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="@color/SurveyBackgroundColor"
+                android:scaleType="fitStart" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
