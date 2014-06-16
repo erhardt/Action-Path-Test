@@ -9,13 +9,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView.ScaleType;
-import android.widget.Toast;
 import android.widget.LinearLayout;
 import android.graphics.Typeface;
 import android.widget.ScrollView;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.TextView;
-import android.util.TypedValue;
 
 public class ImageChoiceActivity extends FragmentActivity {
 
@@ -43,6 +41,15 @@ public class ImageChoiceActivity extends FragmentActivity {
 		String question = new String("What\'s the best option for connecting the new Chuckie Harris Park to Broadway?");
 		String responses[] = { "A. Street paint at intersection", "B. Gate over Cross St", "C. Grass corridor by Senior Ctr" };
 		String images[] = { "option1_streetpaint", "option2_gate", "option3_grass" };
+	
+		// Build Survey Layout based on current question, responses and images
+		ScrollView surveyLayout = buildSurveyLayout(question, responses, images);
+			
+		// Make surveyLayout the ContentView
+		setContentView(surveyLayout);
+	}
+	
+	public ScrollView buildSurveyLayout(String question, String responses[], String images[]){
 		
 		// Get and scale dimensions from dps to pixels based on screen size
 		int marginTiny = dpToPx(getResources().getDimension(R.dimen.margin_tiny));
@@ -102,7 +109,7 @@ public class ImageChoiceActivity extends FragmentActivity {
 			responseText.setTextColor(fontColor);
 			responseLayout.addView(responseText);
 			
-			// Create response image if used
+			// Create images to click on for each response if used
 			if (images.length != 0){
 				ImageButton responseImage = new ImageButton(this);
 				responseImage.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, imageHeight));
@@ -120,7 +127,7 @@ public class ImageChoiceActivity extends FragmentActivity {
 					}
 				});
 				responseLayout.addView(responseImage);
-			}	
+			} 
 			
 			containerLayout.addView(responseLayout);	
 	    }			
@@ -128,8 +135,7 @@ public class ImageChoiceActivity extends FragmentActivity {
 		// Add LinearLayouts to ScrollView
 		surveyLayout.addView(containerLayout);
 		
-		// Make surveyLayout the ContentView
-		setContentView(surveyLayout);
+		return surveyLayout;
 	}
 	
 	private int dpToPx(float dp){
