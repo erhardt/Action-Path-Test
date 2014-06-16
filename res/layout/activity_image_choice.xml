@@ -23,7 +23,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@color/SurveyBackgroundColor"
         android:orientation="vertical"
         android:padding="@dimen/margin_small" >
@@ -127,8 +127,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone" >
+            android:orientation="vertical" >
 
             <TextView
                 android:id="@+id/textViewSurveyFourthOption"
@@ -140,12 +139,16 @@
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="@color/SurveyFontColor" />
 
-            <ImageButton
+            <Button
                 android:id="@+id/surveyFourthImage"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:background="@color/SurveyBackgroundColor"
-                android:scaleType="fitStart" />
+                android:background="@color/SurveyButtonColor"
+                android:ellipsize="none"
+                android:scaleType="fitStart"
+                android:text="@string/survey_button_text"
+                android:textColor="@color/SurveyButtonFontColor"
+                android:textStyle="italic" />
 
         </LinearLayout>
         

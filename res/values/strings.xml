@@ -130,8 +130,9 @@
     <string name="active_response_a">A. Street paint at intersection</string>
     <string name="active_response_b">B. Gate over Cross St</string>
     <string name="active_response_c">C. Grass corridor by Senior Ctr</string>
-    <string name="active_response_d"/>
-    <string name="active_response_e"/>
+    <string name="active_response_d">D. Test Option D</string>
+    <string name="active_response_e">E. Test Option E</string>
     <string name="active_action">Chuckie Harris Park</string>
+    <string name="survey_button_text">Vote D</string>
     
 </resources>

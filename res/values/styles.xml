@@ -33,5 +33,7 @@
     </style>
     <color name="SurveyFontColor">#fff</color>
     <color name="SurveyBackgroundColor">#000</color>
+    <color name="SurveyButtonColor">#555</color>
+    <color name="SurveyButtonFontColor">#000</color>
 
 </resources>

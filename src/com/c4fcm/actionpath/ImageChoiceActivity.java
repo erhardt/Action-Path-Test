@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.graphics.Typeface;
@@ -19,29 +20,13 @@ public class ImageChoiceActivity extends FragmentActivity {
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-//	    setContentView(R.layout.activity_image_choice);
-//
-//	    ImageButton[] images = {
-//	    		(ImageButton) findViewById(R.id.surveyFirstImage),
-//	    		(ImageButton) findViewById(R.id.surveySecondImage),
-//	    		(ImageButton) findViewById(R.id.surveyThirdImage)
-//	    };
-//	    for(int i=0;i<images.length; i++){
-//	    	images[i].setOnClickListener(new View.OnClickListener() {
-//				@Override
-//				public void onClick(View arg0) {
-//					Intent i = new Intent(arg0.getContext(), SurveyThanksActivity.class);
-//					startActivity(i); 
-//					finish();
-//				}
-//			});
-//	    }
 	
 		// Instantiate text for question and responses
 		String question = new String("What\'s the best option for connecting the new Chuckie Harris Park to Broadway?");
-		String responses[] = { "A. Street paint at intersection", "B. Gate over Cross St", "C. Grass corridor by Senior Ctr" };
-		String images[] = { "option1_streetpaint", "option2_gate", "option3_grass" };
-	
+		String responses[] = { "Street paint at intersection", "Gate over Cross St", "Grass corridor by Senior Ctr" };
+		//String images[] = { "option1_streetpaint", "option2_gate", "option3_grass" };
+		String images[] = { }; // empty array for testing 
+		
 		// Build Survey Layout based on current question, responses and images
 		ScrollView surveyLayout = buildSurveyLayout(question, responses, images);
 			
@@ -60,6 +45,8 @@ public class ImageChoiceActivity extends FragmentActivity {
 		// Get reusable colors
 		int bgColor = getResources().getColor(R.color.SurveyBackgroundColor);
 		int fontColor = getResources().getColor(R.color.SurveyFontColor);
+		int buttonColor = getResources().getColor(R.color.SurveyButtonColor);
+		int buttonFontColor = getResources().getColor(R.color.SurveyButtonFontColor);
 		
 		// Instantiate ScrollView layout for survey page
 		ScrollView surveyLayout = new ScrollView(this);
@@ -71,7 +58,7 @@ public class ImageChoiceActivity extends FragmentActivity {
 		containerLayout.setBackgroundColor(bgColor);
 		containerLayout.setOrientation(LinearLayout.VERTICAL);
 		containerLayout.setPadding(marginSmall,marginSmall,marginSmall,marginSmall);
-		containerLayout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+		containerLayout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 		
 		// Create LinearLayout for question text
 		LinearLayout questionLayout = new LinearLayout(this);
@@ -90,8 +77,10 @@ public class ImageChoiceActivity extends FragmentActivity {
 		questionLayout.addView(questionText);
 		containerLayout.addView(questionLayout);
 		
+		char alphabet = 'A'; // response letters to iterate through
+		
 		// Create LinearLayouts for responses with images
-	    for (int i=0;i<responses.length; i++) {
+	    for (int i=0; i<responses.length; i++) {
 	    	
 	    	LinearLayout responseLayout = new LinearLayout(this);
 	    	responseLayout.setOrientation(LinearLayout.VERTICAL);
@@ -104,7 +93,7 @@ public class ImageChoiceActivity extends FragmentActivity {
     	   	LinearLayout.LayoutParams rtp = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 	        rtp.setMargins(0, marginSmall, 0, marginTiny); // rtp.setMargins(left, top, right, bottom);
 	        responseText.setLayoutParams(rtp);
-	        responseText.setText(responses[i]);
+	        responseText.setText(alphabet + ". " + responses[i]);
 			responseText.setTextAppearance(this, android.R.style.TextAppearance_Large);
 			responseText.setTextColor(fontColor);
 			responseLayout.addView(responseText);
@@ -117,7 +106,6 @@ public class ImageChoiceActivity extends FragmentActivity {
 				responseImage.setAdjustViewBounds(true); // corrects for padding added by scaling
 				responseImage.setScaleType(ScaleType.FIT_START);
 				responseImage.setImageResource(getResources().getIdentifier(images[i], "drawable", getPackageName()));
-				responseImage.setTag(images[i]); // makes it retrievable later
 				responseImage.setOnClickListener(new View.OnClickListener() {
 					@Override // make image clickable
 					public void onClick(View arg0) {
@@ -127,9 +115,28 @@ public class ImageChoiceActivity extends FragmentActivity {
 					}
 				});
 				responseLayout.addView(responseImage);
-			} 
+			} else {
+
+				// Create plain buttons if no images included
+				Button responseButton = new Button(this);
+				responseButton.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+				responseButton.setBackgroundColor(buttonColor);
+				responseButton.setTextColor(buttonFontColor);
+				responseButton.setText("vote " + alphabet);
+				responseButton.setOnClickListener(new View.OnClickListener() {
+					@Override // make button clickable
+					public void onClick(View arg0) {
+						Intent i = new Intent(arg0.getContext(), SurveyThanksActivity.class);
+						startActivity(i); 
+						finish();
+					}
+				});
+				responseLayout.addView(responseButton);
+			}
 			
-			containerLayout.addView(responseLayout);	
+			containerLayout.addView(responseLayout); // add response text and button to layout
+			
+			alphabet++; // iterate response letters
 	    }			
 		
 		// Add LinearLayouts to ScrollView
