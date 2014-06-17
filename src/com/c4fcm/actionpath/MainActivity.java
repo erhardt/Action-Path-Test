@@ -512,6 +512,10 @@ public class MainActivity extends FragmentActivity {
         for(String gKey: mPrefs.getGeofenceStoreKeys()){
         	mCurrentGeofences.add(mPrefs.getGeofence(gKey).toGeofence());
         }
+        
+        if(mCurrentGeofences.size()<=0){
+        	return;
+        }
 
 
         // Start the request. Fail if there's already a request in progress
