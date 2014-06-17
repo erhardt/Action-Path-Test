@@ -102,7 +102,7 @@ public class SynchronizeDataService extends IntentService {
 		            	if(validateGeofenceRow(s)){
 		            	      	  JSONObject row = new JSONObject();
 		            	      	  try{
-			            	      	  row.put("survey",s[0]);
+			            	      	  row.put("surveyKey",s[0]);
 			            	      	  row.put("lat", s[1]);
 			            	      	  row.put("long",s[2]);
 			            	      	  row.put("radius",s[3]);

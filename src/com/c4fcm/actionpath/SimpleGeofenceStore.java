@@ -17,7 +17,11 @@
 package com.c4fcm.actionpath;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -32,13 +36,13 @@ import android.preference.PreferenceManager;
 public class SimpleGeofenceStore {
 
     // The SharedPreferences object in which geofences are stored
-    private final SharedPreferences mPrefs;
+    protected final SharedPreferences mPrefs;
 
     // The name of the resulting SharedPreferences
-    private static final String SHARED_PREFERENCE_NAME = "ActionPathPreferences";
+    protected static final String SHARED_PREFERENCE_NAME = "ActionPathPreferences";
                     //MainActivity.class.getSimpleName();
     
-    private ArrayList<String> geofenceStoreKeys;
+    protected ArrayList<String> geofenceStoreKeys;
 
     // Create the SharedPreferences storage with private access only
     public SimpleGeofenceStore(Context context) {
@@ -102,20 +106,34 @@ public class SimpleGeofenceStore {
                 getGeofenceFieldKey(id, GeofenceUtils.KEY_TRANSITION_TYPE),
                 GeofenceUtils.INVALID_INT_VALUE);
 
-        // If none of the values is incorrect, return the object
-        if (
-            lat != GeofenceUtils.INVALID_FLOAT_VALUE &&
-            lng != GeofenceUtils.INVALID_FLOAT_VALUE &&
-            radius != GeofenceUtils.INVALID_FLOAT_VALUE &&
-            expirationDuration != GeofenceUtils.INVALID_LONG_VALUE &&
-            transitionType != GeofenceUtils.INVALID_INT_VALUE) {
-
+        // validate values from shared preferences
+        if (validateGeofenceValues(lat,lng,radius,expirationDuration,transitionType)) {
+        	
             // Return a true Geofence object
             return new SimpleGeofence(id, lat, lng, radius, expirationDuration, transitionType);
 
         // Otherwise, return null.
         } else {
             return null;
+        }
+    }
+    
+    
+    public boolean validateGeofenceValues(double lat, double lng, float radius, long expirationDuration, int transitionType){
+        // If none of the values is incorrect, return the object
+        if (
+            lat != GeofenceUtils.INVALID_DOUBLE_VALUE &&
+            lng != GeofenceUtils.INVALID_DOUBLE_VALUE &&
+            radius != GeofenceUtils.INVALID_FLOAT_VALUE &&
+            expirationDuration != GeofenceUtils.INVALID_LONG_VALUE &&
+            transitionType != GeofenceUtils.INVALID_INT_VALUE) {
+
+            // Return a true Geofence object
+            return true;
+
+        // Otherwise, return null.
+        } else {
+            return false;
         }
     }
     
@@ -155,6 +173,13 @@ public class SimpleGeofenceStore {
      */
     public void setGeofence(String id, SimpleGeofence geofence) {
 
+    	commitBasicGeofenceValues(id, geofence);
+        if(!geofenceStoreKeys.contains(id)){
+        	geofenceStoreKeys.add(id);
+        }
+    }
+    
+    public void commitBasicGeofenceValues(String id, SimpleGeofence geofence){
         /*
          * Get a SharedPreferences editor instance. Among other
          * things, SharedPreferences ensures that updates are atomic
@@ -185,9 +210,6 @@ public class SimpleGeofenceStore {
 
         // Commit the changes
         editor.commit();
-        if(!geofenceStoreKeys.contains(id)){
-        	geofenceStoreKeys.add(id);
-        }
     }
 
     public void clearGeofence(String id) {
@@ -212,7 +234,7 @@ public class SimpleGeofenceStore {
      * @param fieldName The field represented by the key
      * @return The full key name of a value in SharedPreferences
      */
-    private String getGeofenceFieldKey(String id, String fieldName) {
+    protected String getGeofenceFieldKey(String id, String fieldName) {
 
         return
                 GeofenceUtils.KEY_PREFIX +

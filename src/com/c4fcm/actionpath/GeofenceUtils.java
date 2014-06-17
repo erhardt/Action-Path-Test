@@ -80,6 +80,8 @@ public final class GeofenceUtils {
     /*
      * Keys for flattened geofences stored in SharedPreferences
      */
+    public static final String KEY_SURVEY_KEY = "com.example.android.geofence.KEY_SURVEY_KEY";
+    
     public static final String KEY_LATITUDE = "com.example.android.geofence.KEY_LATITUDE";
 
     public static final String KEY_LONGITUDE = "com.example.android.geofence.KEY_LONGITUDE";
@@ -101,6 +103,9 @@ public final class GeofenceUtils {
 
     public static final float INVALID_FLOAT_VALUE = -999.0f;
 
+    public static final float INVALID_DOUBLE_VALUE = -999.0f;
+
+    
     public static final int INVALID_INT_VALUE = -999;
 	public static final String INVALID_STRING_VALUE = "0";
 
