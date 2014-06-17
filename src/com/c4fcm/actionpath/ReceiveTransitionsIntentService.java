@@ -126,7 +126,13 @@ public class ReceiveTransitionsIntentService extends IntentService {
      */
     private void sendNotification(String transitionType, String[] ids) {
 
-    	PendingIntent pi = getPendingIntent();
+    	Log.d("sendNotification","sending notification build thing in ReceiveTransitionsIntentService");
+    	
+    	// TODO: Associate geofence parameter "ids" with surveyKeys
+    	String surveyKey = "MIT Media Lab";
+    	
+    	// create "surveyIntent" to be triggered when user clicks on notification
+    	PendingIntent pi = getPendingIntent(surveyKey);
     	
     	// create the notification
     	Builder notificationBuilder = new Notification.Builder(this);
@@ -138,10 +144,10 @@ public class ReceiveTransitionsIntentService extends IntentService {
     	// you can put subject line.
     	.setSmallIcon(R.drawable.ic_launcher)
     	// Set your notification icon here.
-    	.addAction(R.drawable.ic_notification, "Go There",pi)
+    	.addAction(R.drawable.ic_notification, "Go There", pi)
     	.addAction(
     			R.drawable.ic_stat_snooze,
-    			"Snooze", pi);
+    			"Snooze", pi); // TODO: Make this an actual snooze button
     	
     	// Now create the Big picture notification.
     	Notification notification = new Notification.BigTextStyle(notificationBuilder)
@@ -160,10 +166,14 @@ public class ReceiveTransitionsIntentService extends IntentService {
     }
     
     //creates a PendingIntent for bigPicture notifications
-    public PendingIntent getPendingIntent() {
+    public PendingIntent getPendingIntent(String surveyKey) {
     	Log.v("INTENT","returning an intent for ImageChoiceActivity.class");
-    	return PendingIntent.getActivity(this, 0, new Intent(this,
-    			ImageChoiceActivity.class), 0);
+    	
+    	Intent surveyIntent = new Intent();
+    	surveyIntent.putExtra("surveyKey", surveyKey);
+    	surveyIntent.setClass(this, SurveyActivity.class);
+	
+    	return PendingIntent.getActivity(this, 0, surveyIntent, 0);
     }
 
     public NotificationManager getNotificationManager() {
