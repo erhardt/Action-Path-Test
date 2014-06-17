@@ -110,6 +110,11 @@ public class GeofenceRequester
         mCurrentGeofences = (ArrayList<Geofence>) geofences;
         Log.i("AddGeofences",Integer.toString(mCurrentGeofences.size()));
         
+        //don't try to add an empty list of geofences
+        if(mCurrentGeofences.size()<=0){
+        	return;
+        }
+        
         // If a request is not already in progress
         if (!mInProgress) {
 
