@@ -8,12 +8,14 @@ import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -96,7 +98,10 @@ public class ReceiveTransitionsIntentService extends IntentService {
             	loggerServiceIntent.putExtra("transitionType", transitionType);
                 loggerServiceIntent.putExtra("ids", geofenceIds);
             	startService(loggerServiceIntent);
-                                
+                         
+            	//TODO: retrieve SimpleGeofence objects, work out
+            	//      which surveys are relevant, and 
+            	
             	//create the notification
                 sendNotification(transitionType, geofenceIds);
 
@@ -117,7 +122,7 @@ public class ReceiveTransitionsIntentService extends IntentService {
             }
         }
     }
-
+    
     /**
      * Posts a notification in the notification bar when a transition is detected.
      * If the user clicks the notification, control goes to the main Activity.
@@ -133,6 +138,13 @@ public class ReceiveTransitionsIntentService extends IntentService {
     	
     	// create "surveyIntent" to be triggered when user clicks on notification
     	PendingIntent pi = getPendingIntent(surveyKey);
+    	
+    	//retrieve the relevant survey keys and print them
+    	Context ctx = this.getApplicationContext();
+    	SurveyGeofenceStore mPrefs = new SurveyGeofenceStore(ctx);
+    	ArrayList<String> surveyKeys = mPrefs.getUniqueSurveyKeys(ids);
+    	ArrayList<String> y = mPrefs.getGeofenceStoreKeys();
+    	for (String s : surveyKeys) {Log.i("ArrayList", s);}
     	
     	// create the notification
     	Builder notificationBuilder = new Notification.Builder(this);

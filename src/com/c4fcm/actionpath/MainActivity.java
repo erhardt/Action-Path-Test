@@ -81,7 +81,7 @@ public class MainActivity extends FragmentActivity {
     private REMOVE_TYPE mRemoveType;
 
     // Persistent storage for geofences
-    private SimpleGeofenceStore mPrefs;
+    private SurveyGeofenceStore mPrefs;
 
     // Store a list of geofences to add
     List<Geofence> mCurrentGeofences;
@@ -92,7 +92,7 @@ public class MainActivity extends FragmentActivity {
     private GeofenceRemover mGeofenceRemover;
 
     // list of geofences currently active
-    private ArrayList<SimpleGeofence> mUIGeofences;
+    private ArrayList<SurveyGeofence> mUIGeofences;
     
     // decimal formats for latitude, longitude, and radius
     private DecimalFormat mLatLngFormat;
@@ -161,7 +161,8 @@ public class MainActivity extends FragmentActivity {
         mSyncIntentFilter.addAction(GeofenceUtils.UPDATE_GEOFENCES);
 
         // Instantiate a new geofence storage area
-        mPrefs = new SimpleGeofenceStore(this.getApplicationContext());
+        Context ctx = this.getApplicationContext();
+        mPrefs = new SurveyGeofenceStore(ctx);
 
         // Instantiate the current List of geofences
         mCurrentGeofences = new ArrayList<Geofence>();
@@ -173,7 +174,7 @@ public class MainActivity extends FragmentActivity {
         mGeofenceRemover = new GeofenceRemover(this);
         
         //instantiate list of geofences
-        mUIGeofences = new ArrayList<SimpleGeofence>();
+        mUIGeofences = new ArrayList<SurveyGeofence>();
         
       //  addGeoFences();
         
@@ -330,7 +331,7 @@ public class MainActivity extends FragmentActivity {
     protected void onPause() {
         super.onPause();
         
-        for(SimpleGeofence g: mUIGeofences){
+        for(SurveyGeofence g: mUIGeofences){
         	mPrefs.setGeofence(g.getId(),g);
         }
         
@@ -498,7 +499,8 @@ public class MainActivity extends FragmentActivity {
          * 
          * #1 --> Last lamppost before you get to medical building pass through
          */
-        /*SimpleGeofence mUIGeofence1 = new SimpleGeofence(
+        /*SurveyGeofence mUIGeofence1 = new SimpleGeofence(
+            "surveyKey",
             Double.valueOf(42.361420),
             Double.valueOf(-71.086884),
             Float.valueOf("30.0"),
@@ -510,7 +512,9 @@ public class MainActivity extends FragmentActivity {
         mPrefs.pushGeofence(mUIGeofence1);*/
         
         for(String gKey: mPrefs.getGeofenceStoreKeys()){
-        	mCurrentGeofences.add(mPrefs.getGeofence(gKey).toGeofence());
+        	Log.i("GKey",gKey);
+        	SurveyGeofence g = mPrefs.getGeofence(gKey);
+        	mCurrentGeofences.add(g.toGeofence());
         }
         
         if(mCurrentGeofences.size()<=0){
@@ -547,7 +551,8 @@ public class MainActivity extends FragmentActivity {
                 	JSONArray geofenceData = new JSONArray(serviceJsonString);
                     for(int i =0; i< geofenceData.length(); i++){
                     	JSONObject row = geofenceData.getJSONObject(i);
-              	       	SimpleGeofence sg = new SimpleGeofence(
+              	       	SurveyGeofence sg = new SurveyGeofence(
+              	       	  row.getString("surveyKey"),
 	      	              row.getDouble("lat"),
 	      	              row.getDouble("long"),
 	      	              Float.valueOf(row.getString("radius")),
