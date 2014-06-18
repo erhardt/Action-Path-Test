@@ -103,7 +103,7 @@ public class ReceiveTransitionsIntentService extends IntentService {
             	//      which surveys are relevant, and 
             	
             	//create the notification
-                sendNotification(transitionType, geofenceIds);
+                sendNotifications(transitionType, geofenceIds);
 
                 // Log the transition type and a message to adb debug
                 Log.d(GeofenceUtils.APPTAG,
@@ -122,23 +122,8 @@ public class ReceiveTransitionsIntentService extends IntentService {
             }
         }
     }
-    
-    /**
-     * Posts a notification in the notification bar when a transition is detected.
-     * If the user clicks the notification, control goes to the main Activity.
-     * @param transitionType The type of transition that occurred.
-     *
-     */
-    private void sendNotification(String transitionType, String[] ids) {
-
-    	Log.d("sendNotification","sending notification build thing in ReceiveTransitionsIntentService");
-    	
-    	// TODO: Associate geofence parameter "ids" with surveyKeys
-    	String surveyKey = "MIT Media Lab";
-    	//String surveyKey = "Chuckie Harris Park";
-    	
-    	// create "surveyIntent" to be triggered when user clicks on notification
-    	PendingIntent pi = getPendingIntent(surveyKey);
+        
+    private void sendNotifications(String transitionType, String[] ids){
     	
     	//retrieve the relevant survey keys and print them
     	Context ctx = this.getApplicationContext();
@@ -146,9 +131,27 @@ public class ReceiveTransitionsIntentService extends IntentService {
     	ArrayList<String> surveyKeys = mPrefs.getUniqueSurveyKeys(ids);
     	ArrayList<String> y = mPrefs.getGeofenceStoreKeys();
     	Log.i("NotificationContext", ctx.toString());
-    	for (String s : surveyKeys) {Log.i("SurveyKey", s);}
-    	//for (String s : y) {Log.i("GeofenceStoreKey", s);}
+    	for (String surveyKey : surveyKeys) {
+    		sendNotification(surveyKey);
+    	}
+    }
+    
+    /**
+     * Posts a notification in the notification bar when a transition is detected.
+     * If the user clicks the notification, control goes to the main Activity.
+     * @param transitionType The type of transition that occurred.
+     * For now, ActionPath only handles enter transitionTypes
+     *
+     */
+    private void sendNotification(String surveyKey) {
 
+    	Log.d("sendNotification","sending notification build thing in ReceiveTransitionsIntentService");
+    	Log.i("sendNotification", surveyKey);
+    	
+    	//surveyKey="Chuckie Harris Park";
+    	    	
+    	// create "surveyIntent" to be triggered when user clicks on notification
+    	PendingIntent pi = getPendingIntent(surveyKey);
     	
     	// create the notification
     	Builder notificationBuilder = new Notification.Builder(this);
@@ -160,14 +163,19 @@ public class ReceiveTransitionsIntentService extends IntentService {
     	// you can put subject line.
     	.setSmallIcon(R.drawable.ic_launcher)
     	// Set your notification icon here.
+    	
+    	 //TODO: ADD THESE BACK IN WHEN NEEDED
     	.addAction(R.drawable.ic_notification, "Go There", pi)
     	.addAction(
     			R.drawable.ic_stat_snooze,
-    			"Snooze", pi); // TODO: Make this an actual snooze button
+    			"Snooze", pi); // TODO: Make this an actual snooze button*/
+    	
+    	//notificationBuilder.setContentIntent(pi);
+
     	
     	// Now create the Big picture notification.
     	Notification notification = new Notification.BigTextStyle(notificationBuilder)
-    		.bigText(getString(R.string.active_question)).build();
+    		.bigText("Fill in this awesome form!").build();
     //	Notification notification = new Notification.BigPictureStyle(notificationBuilder).build();
     	/*.bigPicture(
     			BitmapFactory.decodeResource(getResources(),
@@ -183,7 +191,7 @@ public class ReceiveTransitionsIntentService extends IntentService {
     
     //creates a PendingIntent for bigPicture notifications
     public PendingIntent getPendingIntent(String surveyKey) {
-    	Log.v("INTENT","returning an intent for ImageChoiceActivity.class");
+    	Log.v("INTENT","returning an intent for SurveyActivity.class");
     	
     	Intent surveyIntent = new Intent(this, SurveyActivity.class)
     		.putExtra("surveyKey", surveyKey);
