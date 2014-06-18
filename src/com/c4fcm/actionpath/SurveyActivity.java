@@ -21,8 +21,15 @@ public class SurveyActivity extends FragmentActivity {
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-	
-		Log.v("SurveyActivity", "onCreate called");
+		
+		// Build Survey Layout based on current question, responses and images
+		String surveyKey = this.getIntent().getExtras().getString("surveyKey");
+		
+		Intent loggerServiceIntent = new Intent(this,LoggerService.class);
+        loggerServiceIntent.putExtra("logType", "actionLocation");
+     	loggerServiceIntent.putExtra("action", "NotificationClick");
+        loggerServiceIntent.putExtra("data", surveyKey);
+    	startService(loggerServiceIntent);
 		
 		
 		// ---------------- TEST DATA -------------- //
@@ -54,9 +61,7 @@ public class SurveyActivity extends FragmentActivity {
 			
 			
 	
-			// Build Survey Layout based on current question, responses and images
-			String surveyKey = this.getIntent().getExtras().getString("surveyKey");
-			
+
 			JSONObject currentSurvey = surveys.getJSONObject(surveyKey);
 			String currentQuestion = currentSurvey.getString("question");
 			JSONArray responsesJSON = currentSurvey.getJSONArray("responses");
@@ -156,6 +161,15 @@ public class SurveyActivity extends FragmentActivity {
 				responseImage.setOnClickListener(new View.OnClickListener() {
 					@Override // make image clickable
 					public void onClick(View arg0) {
+						//Log the fact that this was clicked
+						Intent loggerServiceIntent = new Intent(arg0.getContext(),LoggerService.class);
+				        loggerServiceIntent.putExtra("logType", "actionLocation");
+				     	loggerServiceIntent.putExtra("action", "SurveyResponse");
+				        loggerServiceIntent.putExtra("data", ""); //eventually include the survey data
+				    	startService(loggerServiceIntent);
+						
+						
+						//Load the Thanks page
 						Intent i = new Intent(arg0.getContext(), SurveyThanksActivity.class);
 						startActivity(i); 
 						finish();
@@ -173,6 +187,14 @@ public class SurveyActivity extends FragmentActivity {
 				responseButton.setOnClickListener(new View.OnClickListener() {
 					@Override // make button clickable
 					public void onClick(View arg0) {
+						//Log the fact that this was clicked
+						Intent loggerServiceIntent = new Intent(arg0.getContext(),LoggerService.class);
+				        loggerServiceIntent.putExtra("logType", "actionLocation");
+				     	loggerServiceIntent.putExtra("action", "SurveyResponse");
+				        loggerServiceIntent.putExtra("data", ""); //eventually include the survey data
+				    	startService(loggerServiceIntent);
+						
+						// Load the Thanks page
 						Intent i = new Intent(arg0.getContext(), SurveyThanksActivity.class);
 						startActivity(i); 
 						finish();
@@ -199,6 +221,7 @@ public class SurveyActivity extends FragmentActivity {
 	
 	public void onResume(){
     	super.onResume();
+    	Log.i("SurveyActivity","OnResumeCalled");
     	NotificationManager notificationManager =(NotificationManager) 
     			  getSystemService(NOTIFICATION_SERVICE);
     	notificationManager.cancel(0);

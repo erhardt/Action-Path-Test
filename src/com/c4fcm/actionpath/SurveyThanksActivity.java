@@ -17,6 +17,14 @@ public class SurveyThanksActivity extends FragmentActivity {
 	
 	
 	public void dismissThanks(View view){
+		
+		//Log the fact that this was clicked
+		Intent loggerServiceIntent = new Intent(view.getContext(),LoggerService.class);
+        loggerServiceIntent.putExtra("logType", "actionLocation");
+     	loggerServiceIntent.putExtra("action", "thanksDismissed");
+        loggerServiceIntent.putExtra("data", ""); //eventually include the survey data
+    	startService(loggerServiceIntent);
+		
 		Intent homeIntent= new Intent(Intent.ACTION_MAIN);
 		homeIntent.addCategory(Intent.CATEGORY_HOME);
 		homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

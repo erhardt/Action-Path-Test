@@ -64,6 +64,10 @@ GooglePlayServicesClient.OnConnectionFailedListener{
 			String data = intent.getStringExtra("data");
 	    	Log.i("LoggerAction", action);
 			queueAction(action, data);
+		}else if(logType.equals("actionLocation")){
+			String action = intent.getStringExtra("action");
+			String data = intent.getStringExtra("data");
+			queueLocation(action, data);
 		}
 	}
 	
@@ -124,7 +128,7 @@ GooglePlayServicesClient.OnConnectionFailedListener{
 		while(it.hasNext())
 		{
 			ArrayList<String> locationLog = it.next();
-			logCurrentLocation(locationLog.get(0), locationLog.get(1),latitude, longitude, locationLog.get(2));
+			logCurrentLocation(locationLog.get(0), locationLog.get(1), locationLog.get(2), latitude, longitude);
 		}
 		queuedLocationLogs.clear(); // TODO: could be a garbage collection issue
 	}
@@ -155,7 +159,7 @@ GooglePlayServicesClient.OnConnectionFailedListener{
 	}
 
 	/// LOG CURRENT LOCATION TO A FILE
-	public void logCurrentLocation(String timestamp, String transition, String latitude, String longitude, String geofence){
+	public void logCurrentLocation(String timestamp, String action, String data, String latitude, String longitude){
 		try{
 			String root = Environment.getExternalStorageDirectory().getAbsolutePath().toString();
 			File dir = new File(root + storagePath);    
@@ -163,7 +167,7 @@ GooglePlayServicesClient.OnConnectionFailedListener{
 			if(dir.mkdirs() || dir.isDirectory()){
 
 				FileWriter write = new FileWriter(root + storagePath + File.separator + storageFile, true);
-				String line = geofence + "," + transition + "," + timestamp + 
+				String line = timestamp + "," + action + "," + data + 
 						"," + latitude + "," + longitude+"\n";
 				Log.i("LogCurrentLocation",line);
 				write.append(line);
