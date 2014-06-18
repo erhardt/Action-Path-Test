@@ -135,6 +135,7 @@ public class ReceiveTransitionsIntentService extends IntentService {
     	
     	// TODO: Associate geofence parameter "ids" with surveyKeys
     	String surveyKey = "MIT Media Lab";
+    	//String surveyKey = "Chuckie Harris Park";
     	
     	// create "surveyIntent" to be triggered when user clicks on notification
     	PendingIntent pi = getPendingIntent(surveyKey);
@@ -181,11 +182,10 @@ public class ReceiveTransitionsIntentService extends IntentService {
     public PendingIntent getPendingIntent(String surveyKey) {
     	Log.v("INTENT","returning an intent for ImageChoiceActivity.class");
     	
-    	Intent surveyIntent = new Intent();
-    	surveyIntent.putExtra("surveyKey", surveyKey);
-    	surveyIntent.setClass(this, SurveyActivity.class);
+    	Intent surveyIntent = new Intent(this, SurveyActivity.class)
+    		.putExtra("surveyKey", surveyKey);
 	
-    	return PendingIntent.getActivity(this, 0, surveyIntent, 0);
+    	return PendingIntent.getActivity(this, 0, surveyIntent, PendingIntent.FLAG_CANCEL_CURRENT);
     }
 
     public NotificationManager getNotificationManager() {

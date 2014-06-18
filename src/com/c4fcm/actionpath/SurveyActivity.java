@@ -22,57 +22,62 @@ public class SurveyActivity extends FragmentActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 	
-		Log.d("ImageChoiceActivity", "onCreate called");
+		Log.v("SurveyActivity", "onCreate called");
+		
 		
 		// ---------------- TEST DATA -------------- //
 		
 		// Instantiate text for questions and their responses
-		String surveyKey1 = "Chuckie Harris Park";
-		String question1 = "What\'s the best option for connecting the new Chuckie Harris Park to Broadway?";
-		String responses1 = "Street paint at intersection, Gate over Cross St, Grass corridor by Senior Ctr";
-		String images1 = "option1_streetpaint, option2_gate, option3_grass";
+		String surveyKey1 = "\"Chuckie Harris Park\"";
+		String question1 = "\"What\'s the best option for connecting the new Chuckie Harris Park to Broadway?\"";
+		String responses1 = "\"Street paint at intersection\", \"Gate over Cross St\", \"Grass corridor by Senior Ctr\"";
+		String images1 = "\"option1_streetpaint\", \"option2_gate\", \"option3_grass\"";
 		
-		String surveyKey2 = "MIT Media Lab";
-		String question2 = "What addition to the 3rd Floor Cafe would you most like to see?";
-		String responses2 = "Popcorn Machine, Pizza Oven, Kegerator";
+		String surveyKey2 = "\"MIT Media Lab\"";
+		String question2 = "\"What addition to the 3rd Floor Cafe would you most like to see?\"";
+		String responses2 = "\"Popcorn Machine\", \"Pizza Oven\", \"Kegerator\"";
 		String images2 = ""; // empty array for testing		
 		
-		try {	
-		JSONObject surveys = new JSONObject(
-				"{" + surveyKey1 + ": {"
-					+ "{question: " + question1 + "},"
-					+ "{responses: [" + responses1 + "]},"
-					+ "{images: [" + images1 + "]},"
-				+ surveyKey2 + ": {"
-					+ "{question: " + question2 + "},"
-					+ "{responses: [" + responses2 + "]},"
-					+ "{images: [" + images2 + "]}"
-				+ "}");
-		
 		// ----------------------------------------- //
-
-		// Build Survey Layout based on current question, responses and images
-		String surveyKey = this.getIntent().getExtras().getString("surveyKey");
 		
-		JSONObject currentSurvey = surveys.getJSONObject(surveyKey);
-		String currentQuestion = currentSurvey.getString("question");
-		JSONArray responsesJSON = currentSurvey.getJSONArray("responses");
-		JSONArray imagesJSON = currentSurvey.getJSONArray("images");
-		String[] currentResponses = new String[responsesJSON.length()];
-		String[] currentImages = new String[responsesJSON.length()];
+		try {	
+			JSONObject surveys = new JSONObject(
+					"{" + surveyKey1 + ": {"
+						+ "\"question\": " + question1 + ","
+						+ "\"responses\": [" + responses1 + "],"
+						+ "\"images\": [" + images1 + "]},"
+					+ surveyKey2 + ": {"
+						+ "\"question\": " + question2 + ","
+						+ "\"responses\": [" + responses2 + "],"
+						+ "\"images\": [" + images2 + "]}"
+					+ "}");
+			
+			
+	
+			// Build Survey Layout based on current question, responses and images
+			String surveyKey = this.getIntent().getExtras().getString("surveyKey");
+			
+			JSONObject currentSurvey = surveys.getJSONObject(surveyKey);
+			String currentQuestion = currentSurvey.getString("question");
+			JSONArray responsesJSON = currentSurvey.getJSONArray("responses");
+			JSONArray imagesJSON = currentSurvey.getJSONArray("images");
+			String[] currentResponses = new String[responsesJSON.length()];
+			String[] currentImages = new String[imagesJSON.length()];
 		
-
 			for (int i=0; i<responsesJSON.length(); i++) {
 				currentResponses[i] = responsesJSON.get(i).toString();
-				currentImages[i] = imagesJSON.get(i).toString();
+				
+				if (imagesJSON.length() == responsesJSON.length()) {
+					currentImages[i] = imagesJSON.get(i).toString();
+				}
 			}
-
+			
 			ScrollView surveyLayout = buildSurveyLayout(currentQuestion, currentResponses, currentImages);
 			// Make surveyLayout the ContentView
 			setContentView(surveyLayout);
 		}
 		catch (JSONException e) {
-			
+			Log.e("SurveyActivity.java","JSONException");
 		}
 	}
 	
@@ -201,7 +206,7 @@ public class SurveyActivity extends FragmentActivity {
 	
 	  //creates a PendingIntent
     public PendingIntent getPendingIntent() {
-    	Log.v("INTENT","returning an intent for ImageChoiceActivity.class");
+    	Log.v("INTENT","returning an intent for SurveyActivity.class");
     	return PendingIntent.getActivity(this, 0, new Intent(this,
     			SurveyThanksActivity.class), 0);
     }
