@@ -7,6 +7,7 @@ import java.util.HashSet;
 
 import android.content.Context;
 import android.content.SharedPreferences.Editor;
+import android.util.Log;
 
 public class SurveyGeofenceStore extends SimpleGeofenceStore {
 
@@ -33,7 +34,35 @@ public class SurveyGeofenceStore extends SimpleGeofenceStore {
     	commitBasicGeofenceValues(id, geofence);
         if(!geofenceStoreKeys.contains(id)){
         	geofenceStoreKeys.add(id);
+            commitGeofenceStoreKeys();
         }
+    }
+    
+    /**
+     *  Push a geofence into storage
+	 * NOTE: THIS IS A TOTAL COPY FROM SimpleGeoFenceStore and should be refactored
+	 *       SINCE THE ONLY DIFFERENCE is that we use SurveyGeofence
+     * @param geofence The {@link SurveyGeofence} containing the
+     * values you want to save in SharedPreferences
+     */
+    public void pushGeofence(SurveyGeofence geofence){
+    	Editor editor = mPrefs.edit();
+    	String maxFenceKey = GeofenceUtils.KEY_PREFIX + "_MAXFENCE";
+        String maxFence = mPrefs.getString(maxFenceKey, GeofenceUtils.INVALID_STRING_VALUE);
+             
+        String newFenceID=Integer.toString(Integer.parseInt(maxFence)+1);
+        
+        geofence.setId(newFenceID);
+
+        editor.putString(maxFenceKey, newFenceID);
+        editor.commit();
+   
+        geofenceStoreKeys.add(newFenceID);
+        commitGeofenceStoreKeys();
+        setGeofence(newFenceID, geofence); 
+        //TODO: VERIFY THAT THE GeofenceKey is being stored
+        SurveyGeofence g = getGeofence(newFenceID);
+        //Log.i("VerifySurveyKey",g.getSurveyKey());
     }
 	
 	/**
@@ -90,7 +119,9 @@ public class SurveyGeofenceStore extends SimpleGeofenceStore {
     	ArrayList<String> surveyKeys = new ArrayList<String>();
     	for(String id: ids){
     		SurveyGeofence sg = getGeofence(id);
-    		surveyKeys.add(sg.getSurveyKey());
+    		if(sg!=null){
+    			surveyKeys.add(sg.getSurveyKey());
+    		}
     	}
     	return surveyKeys;
     }

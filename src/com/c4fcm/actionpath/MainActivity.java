@@ -162,6 +162,7 @@ public class MainActivity extends FragmentActivity {
 
         // Instantiate a new geofence storage area
         Context ctx = this.getApplicationContext();
+        Log.i("MainActivityContext", ctx.toString());
         mPrefs = new SurveyGeofenceStore(ctx);
 
         // Instantiate the current List of geofences
@@ -512,7 +513,7 @@ public class MainActivity extends FragmentActivity {
         mPrefs.pushGeofence(mUIGeofence1);*/
         
         for(String gKey: mPrefs.getGeofenceStoreKeys()){
-        	Log.i("GKey",gKey);
+        	//Log.i("GKey",gKey);
         	SurveyGeofence g = mPrefs.getGeofence(gKey);
         	mCurrentGeofences.add(g.toGeofence());
         }
@@ -551,6 +552,7 @@ public class MainActivity extends FragmentActivity {
                 	JSONArray geofenceData = new JSONArray(serviceJsonString);
                     for(int i =0; i< geofenceData.length(); i++){
                     	JSONObject row = geofenceData.getJSONObject(i);
+                    	//Log.i("SurveyKeyMain",row.getString("surveyKey"));
               	       	SurveyGeofence sg = new SurveyGeofence(
               	       	  row.getString("surveyKey"),
 	      	              row.getDouble("lat"),

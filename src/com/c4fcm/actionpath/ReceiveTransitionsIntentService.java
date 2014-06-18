@@ -138,7 +138,10 @@ public class ReceiveTransitionsIntentService extends IntentService {
     	SurveyGeofenceStore mPrefs = new SurveyGeofenceStore(ctx);
     	ArrayList<String> surveyKeys = mPrefs.getUniqueSurveyKeys(ids);
     	ArrayList<String> y = mPrefs.getGeofenceStoreKeys();
-    	for (String s : surveyKeys) {Log.i("ArrayList", s);}
+    	Log.i("NotificationContext", ctx.toString());
+    	for (String s : surveyKeys) {Log.i("SurveyKey", s);}
+    	//for (String s : y) {Log.i("GeofenceStoreKey", s);}
+
     	
     	// create the notification
     	Builder notificationBuilder = new Notification.Builder(this);

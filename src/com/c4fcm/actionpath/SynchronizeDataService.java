@@ -101,6 +101,7 @@ public class SynchronizeDataService extends IntentService {
 		            	//Log.i("Line",Arrays.toString(s));
 		            	if(validateGeofenceRow(s)){
 		            	      	  JSONObject row = new JSONObject();
+		            	      	 // Log.i("SurveyKey", s[0]);
 		            	      	  try{
 			            	      	  row.put("surveyKey",s[0]);
 			            	      	  row.put("lat", s[1]);

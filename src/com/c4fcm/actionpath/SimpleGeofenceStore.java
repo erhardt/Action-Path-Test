@@ -21,12 +21,14 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 /**
  * Storage for geofence values, implemented in SharedPreferences.
@@ -48,14 +50,40 @@ public class SimpleGeofenceStore {
     public SimpleGeofenceStore(Context context) {
     	
     	
-    	//mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-        mPrefs =
+    	mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        /*mPrefs =
                 context.getSharedPreferences(
                         SHARED_PREFERENCE_NAME,
-                        Context.MODE_PRIVATE);
-        geofenceStoreKeys = new ArrayList<String>();
+                        Context.MODE_PRIVATE);*/
+    	
+    	//TODO: store keys in a sharedPreference
+        geofenceStoreKeys = retrieveGeofenceStoreKeys();
     }
+    
+    protected void commitGeofenceStoreKeys(){
+    	JSONArray geofenceStoreKeysJSON = new JSONArray(geofenceStoreKeys);
+        Editor editor = mPrefs.edit();
 
+        // Write the Geofence values to SharedPreferences
+        editor.putString("GEOFENCE_STORE_KEYS",geofenceStoreKeysJSON.toString());
+        editor.commit();
+    }
+    
+    protected ArrayList<String> retrieveGeofenceStoreKeys(){
+        JSONArray geofenceStoreKeysJSON;
+        ArrayList<String> gfsk = new ArrayList<String>();
+    	try {
+			geofenceStoreKeysJSON = new JSONArray(mPrefs.getString("GEOFENCE_STORE_KEYS", GeofenceUtils.INVALID_STRING_VALUE));
+    		//Log.i("GeofenceStoreKeysLength",Integer.toString(geofenceStoreKeysJSON.length()));
+			for(int i = 0; i < geofenceStoreKeysJSON.length(); i++){
+	    		gfsk.add(geofenceStoreKeysJSON.getString(i));
+	    	}
+		} catch (JSONException e) {
+			geofenceStoreKeysJSON = new JSONArray();
+		}
+    	return gfsk;
+    }
+    
     /**
      * Returns a stored geofence by its id, or returns {@code null}
      * if it's not found.
@@ -155,6 +183,7 @@ public class SimpleGeofenceStore {
         editor.commit();
    
         geofenceStoreKeys.add(newFenceID);
+        commitGeofenceStoreKeys();
         setGeofence(newFenceID, geofence);
     }
     
@@ -242,4 +271,5 @@ public class SimpleGeofenceStore {
                 "_" +
                 fieldName;
     }
+
 }
