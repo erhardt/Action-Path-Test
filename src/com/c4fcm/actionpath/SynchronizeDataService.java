@@ -62,14 +62,16 @@ public class SynchronizeDataService extends IntentService {
 		   row[0]!=null && row[0].length() > 0 &&
 		   row[1]!=null && row[1].length() > 0 &&
 		   row[2]!=null && row[2].length() > 0 &&
-		   row[3]!=null && row[3].length() > 0){
+		   row[3]!=null && row[2].length() > 0 &&
+		   row[4]!=null && row[3].length() > 0){
 			try{
-				//verify that the rows parse into doubles or floats
-				Double.valueOf(row[1]);
+				//verify that requisite rows parse into doubles or floats
 				Double.valueOf(row[2]);
-				Float.valueOf(row[3]);
+				Double.valueOf(row[3]);
+				Float.valueOf(row[4]);
 				return true;
 			}catch(NumberFormatException n){
+				Log.i("SynchronizeDataService","Invalid Geofence Data in Google Spreadsheet");
 				return false;
 			}
 			
@@ -103,10 +105,11 @@ public class SynchronizeDataService extends IntentService {
 		            	      	  JSONObject row = new JSONObject();
 		            	      	 // Log.i("SurveyKey", s[0]);
 		            	      	  try{
-			            	      	  row.put("surveyKey",s[0]);
-			            	      	  row.put("lat", s[1]);
-			            	      	  row.put("long",s[2]);
-			            	      	  row.put("radius",s[3]);
+		            	      		  row.put("uniqueID", s[0]);
+			            	      	  row.put("surveyKey",s[1]);
+			            	      	  row.put("lat", s[2]);
+			            	      	  row.put("long",s[3]);
+			            	      	  row.put("radius",s[4]);
 		            	      	  }catch (Exception e) {
 		            	      	      Log.i("JSONCreate",e.getStackTrace().toString());
 		            	          }

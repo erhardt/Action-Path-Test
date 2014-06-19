@@ -242,7 +242,10 @@ public class SimpleGeofenceStore {
     }
 
     public void clearGeofence(String id) {
-
+    	removeSimpleGeofence(id);
+    }
+    
+    public void removeSimpleGeofence(String id){
         // Remove a flattened geofence object from storage by removing all of its keys
         Editor editor = mPrefs.edit();
         editor.remove(getGeofenceFieldKey(id, GeofenceUtils.KEY_LATITUDE));

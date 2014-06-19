@@ -82,6 +82,8 @@ public final class GeofenceUtils {
      */
     public static final String KEY_SURVEY_KEY = "com.example.android.geofence.KEY_SURVEY_KEY";
     
+    public static final String KEY_UNIQUE_ID = "com.example.android.geofence.KEY_UNIQUE_ID";
+    
     public static final String KEY_LATITUDE = "com.example.android.geofence.KEY_LATITUDE";
 
     public static final String KEY_LONGITUDE = "com.example.android.geofence.KEY_LONGITUDE";

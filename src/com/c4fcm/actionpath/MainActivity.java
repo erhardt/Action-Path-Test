@@ -188,7 +188,7 @@ public class MainActivity extends FragmentActivity {
         // Attach to the main UI
         setContentView(R.layout.activity_main);
        
-        Log.i("MainActivity.OnCreate", "synchronizeDataService");
+        Log.i("MainActivity.OnCreate", "synchronizeDataService"); 
         synchronizeDataService();
 
     }
@@ -196,7 +196,9 @@ public class MainActivity extends FragmentActivity {
     public void activateDownloadedGeofences(View view){
     	Log.i("MainActivity", "launching data download intent");
         Log.i("MAINmPrefs",Integer.toString(mPrefs.getGeofenceStoreKeys().size()));
-    	addGeoFences();
+        //remove geofences from geofence system
+        
+        addGeoFences();
     	
     	// CREATE A LOCATION LOG
     	Intent loggerServiceIntent = new Intent(this,LoggerService.class);
@@ -480,6 +482,33 @@ public class MainActivity extends FragmentActivity {
     }
 
 
+    public void removeGeofences(){
+    	
+        mRequestType = GeofenceUtils.REQUEST_TYPE.REMOVE;
+        if (!servicesConnected()) {
+            return;
+        }
+        
+        ArrayList<String> currentGeofences = new ArrayList<String>();
+        
+        for(String gKey: mPrefs.getGeofenceStoreKeys()){
+        	SurveyGeofence g = mPrefs.getGeofence(gKey);
+        	currentGeofences.add(g.getId());
+        }
+        
+        try {
+            // Try to remove geofences
+            mGeofenceRemover.removeGeofencesById(currentGeofences);
+            
+            // Notify user that geofence loading was successful
+            Log.i("MainActivity", "Successfully removed geofences");
+        } catch (UnsupportedOperationException e) {
+            // Notify user that previous request hasn't finished.
+            Log.i("MainActivity", "Error removing geofences");
+        }
+        
+
+    }
 
     public void addGeoFences() {
 
@@ -560,19 +589,46 @@ public class MainActivity extends FragmentActivity {
                 String serviceJsonString = intent.getStringExtra("json");            
                 //Log.i("SynchronizeDataReceiver",serviceJsonString);
                 try{
+                	
+                	// Load the JSON
                 	JSONArray geofenceData = new JSONArray(serviceJsonString);
+                	
+                	// if the JSON loads,  first remove current geofences from
+                	// the geofence system
+                    //removeGeofences(); 
+                    // then clear the geofences from storage
+                	//mPrefs.clearAllGeofences();
+                	
+                	//once all geofences have been cleared, add new ones
                     for(int i =0; i< geofenceData.length(); i++){
                     	JSONObject row = geofenceData.getJSONObject(i);
                     	//Log.i("SurveyKeyMain",row.getString("surveyKey"));
-              	       	SurveyGeofence sg = new SurveyGeofence(
-              	       	  row.getString("surveyKey"),
-	      	              row.getDouble("lat"),
-	      	              row.getDouble("long"),
-	      	              Float.valueOf(row.getString("radius")),
-	      	              GeofenceUtils.GEOFENCE_EXPIRATION_IN_MILLISECONDS,
-	      	              Geofence.GEOFENCE_TRANSITION_ENTER );//| Geofence.GEOFENCE_TRANSITION_EXIT);
-              	       	mPrefs.pushGeofence(sg);
-              	       	Log.i("MainActivity","SynchronizeDataReceiver: pushed downloaded geofences into list of geofences. Waiting for them to be added");
+
+                    	//Add only unique geofences to storage
+                    	if(!mPrefs.surveyExists(row.getString("uniqueID"))){
+	              	       	SurveyGeofence sg = new SurveyGeofence(
+	              	       	  row.getString("uniqueID"),
+	              	       	  row.getString("surveyKey"),
+		      	              row.getDouble("lat"),
+		      	              row.getDouble("long"),
+		      	              Float.valueOf(row.getString("radius")),
+		      	              GeofenceUtils.GEOFENCE_EXPIRATION_IN_MILLISECONDS,
+		      	              Geofence.GEOFENCE_TRANSITION_ENTER );//| Geofence.GEOFENCE_TRANSITION_EXIT);
+	              	       	mPrefs.pushGeofence(sg);
+	              	       	
+	              	       	String logData =sg.getId() + ":" + sg.getUniqueID() + ":" + sg.getSurveyKey();
+	              	       	Log.i("MainActivity","pushed geofence. logging geofence..." + logData);
+                    
+	              	    	// CREATE A LOG CONTAINING surveykey, geofence id within the app, and geofence unique ID
+	              	    	Intent loggerServiceIntent = new Intent(getApplicationContext(),LoggerService.class);
+	              	    	loggerServiceIntent.putExtra("logType", "action");
+	              	    	loggerServiceIntent.putExtra("action", "addedGeofence");
+	              	    	loggerServiceIntent.putExtra("data", logData);
+	              	    	startService(loggerServiceIntent);
+                    	
+                    	}else{
+                    		Log.i("MainActivity", "declining to store a duplicate geofence");
+                    	}
                     }
 
                 }catch(JSONException e){

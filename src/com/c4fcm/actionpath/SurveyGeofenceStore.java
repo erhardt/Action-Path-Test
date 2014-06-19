@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences.Editor;
 import android.util.Log;
 
@@ -29,6 +30,10 @@ public class SurveyGeofenceStore extends SimpleGeofenceStore {
         editor.putString(
         		getGeofenceFieldKey(id, GeofenceUtils.KEY_SURVEY_KEY),
                 (String) geofence.getSurveyKey()
+        		);
+        editor.putString(
+        		getGeofenceFieldKey(id, GeofenceUtils.KEY_UNIQUE_ID),
+                (String) geofence.getUniqueID()
         		);
         editor.commit();
     	commitBasicGeofenceValues(id, geofence);
@@ -80,6 +85,10 @@ public class SurveyGeofenceStore extends SimpleGeofenceStore {
     			getGeofenceFieldKey(id,GeofenceUtils.KEY_SURVEY_KEY),
     			GeofenceUtils.INVALID_STRING_VALUE); 
     	
+    	String uniqueID = mPrefs.getString(
+    			getGeofenceFieldKey(id,GeofenceUtils.KEY_UNIQUE_ID),
+    			GeofenceUtils.INVALID_STRING_VALUE); 
+    	
         double lat = mPrefs.getFloat(
                 getGeofenceFieldKey(id, GeofenceUtils.KEY_LATITUDE),
                 GeofenceUtils.INVALID_FLOAT_VALUE);
@@ -103,7 +112,7 @@ public class SurveyGeofenceStore extends SimpleGeofenceStore {
         // validate returned values
         if (validateGeofenceValues(lat,lng,radius,expirationDuration,transitionType)) {
             // Return a true Geofence object
-            return new SurveyGeofence(surveyKey, id, lat, lng, 
+            return new SurveyGeofence(uniqueID, surveyKey, id, lat, lng, 
             		radius, expirationDuration, transitionType);
         // Otherwise, return null.
         } else {
@@ -111,6 +120,36 @@ public class SurveyGeofenceStore extends SimpleGeofenceStore {
         }
     }
 	
+    public boolean surveyExists(String uniqueID){
+    	for (String geofenceStoreKey: geofenceStoreKeys){
+        	String id = mPrefs.getString(
+        			getGeofenceFieldKey(geofenceStoreKey,GeofenceUtils.KEY_UNIQUE_ID),
+        			GeofenceUtils.INVALID_STRING_VALUE);
+        	if(id.equals(uniqueID)){
+        		return true;
+        	}
+    	}
+    	return false;
+    }
+
+    // Remove a flattened geofence object from storage by removing all of its keys
+    public void clearGeofence(String id) {
+        Editor editor = mPrefs.edit();
+        editor.remove(getGeofenceFieldKey(id, GeofenceUtils.KEY_UNIQUE_ID));
+        editor.remove(getGeofenceFieldKey(id, GeofenceUtils.KEY_SURVEY_KEY));
+        editor.commit();
+        removeSimpleGeofence(id);
+    }
+    
+    //remove all geofences from storage
+    public void clearAllGeofences(){
+    	Log.i("SurveyGeofenceStore", "Clearing all Geofences from storage");
+    	ArrayList<String> l = new ArrayList<String>(geofenceStoreKeys);
+    	for(String s: l){
+    		clearGeofence(s);
+    	}
+    }
+    
     /*
      * Get unique survey keys for a set of geofence IDs
      */
