@@ -21,7 +21,7 @@ public class SurveyThanksActivity extends FragmentActivity {
 		//Log the fact that the user simply dismissed the thanks
 		Intent loggerServiceIntent = new Intent(view.getContext(),LoggerService.class);
         loggerServiceIntent.putExtra("logType", "action");
-     	loggerServiceIntent.putExtra("action", "thanksDismissed");
+     	loggerServiceIntent.putExtra("action", "ThanksDismissed");
         loggerServiceIntent.putExtra("data", ""); //eventually include the survey data (need this?)
     	startService(loggerServiceIntent);
 		
@@ -37,10 +37,13 @@ public class SurveyThanksActivity extends FragmentActivity {
 		//Log the fact that the user unfollowed the issue
 		Intent loggerServiceIntent = new Intent(view.getContext(),LoggerService.class);
         loggerServiceIntent.putExtra("logType", "action");
-     	loggerServiceIntent.putExtra("action", "unfollowed issue");
+     	loggerServiceIntent.putExtra("action", "UnfollowedIssue");
         loggerServiceIntent.putExtra("data", ""); //eventually include the survey data (need this?)
     	startService(loggerServiceIntent);
 		
+    	Toast.makeText(this, "Issue has been unfollowed.",
+                Toast.LENGTH_SHORT).show();
+    	
 		Intent homeIntent= new Intent(Intent.ACTION_MAIN);
 		homeIntent.addCategory(Intent.CATEGORY_HOME);
 		homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

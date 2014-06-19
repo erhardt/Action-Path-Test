@@ -197,6 +197,13 @@ public class MainActivity extends FragmentActivity {
     	Log.i("MainActivity", "launching data download intent");
         Log.i("MAINmPrefs",Integer.toString(mPrefs.getGeofenceStoreKeys().size()));
     	addGeoFences();
+    	
+    	// CREATE A LOCATION LOG
+    	Intent loggerServiceIntent = new Intent(this,LoggerService.class);
+    	loggerServiceIntent.putExtra("logType", "action");
+    	loggerServiceIntent.putExtra("action", "LoadedLatestActions");
+    	loggerServiceIntent.putExtra("data", "");
+    	startService(loggerServiceIntent);
     }
     
     public void synchronizeDataService(){
@@ -205,7 +212,7 @@ public class MainActivity extends FragmentActivity {
     }
     
     public void recordLogAction(View view){   	
-    	// CREATE A NON LOCATION ACTION LOG
+    	/*// CREATE A NON LOCATION ACTION LOG
     	//Log.i("MainActivityLoggingTask", "Created");
      	Intent loggerServiceIntent = new Intent(this,LoggerService.class);
         loggerServiceIntent.putExtra("logType", "action");
@@ -219,7 +226,7 @@ public class MainActivity extends FragmentActivity {
     	loggerServiceIntent.putExtra("logType", "location");
     	loggerServiceIntent.putExtra("transitionType", "entered");
         loggerServiceIntent.putExtra("ids", geofenceIds);
-    	startService(loggerServiceIntent);
+    	startService(loggerServiceIntent);*/
     }
 
     /*
@@ -527,6 +534,10 @@ public class MainActivity extends FragmentActivity {
         try {
             // Try to add geofences
             mGeofenceRequester.addGeofences(mCurrentGeofences);
+            
+            // Notify user that geofence loading was successful
+            Toast.makeText(this, "Actions successfully loaded!",
+                        Toast.LENGTH_SHORT).show();
         } catch (UnsupportedOperationException e) {
             // Notify user that previous request hasn't finished.
             Toast.makeText(this, R.string.add_geofences_already_requested_error,
