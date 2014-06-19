@@ -64,8 +64,8 @@
 
             <ImageButton
                 android:id="@+id/surveyFirstImage"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:background="@color/SurveyBackgroundColor"
                 android:scaleType="fitStart"
                 android:src="@drawable/option1_streetpaint" />
@@ -90,8 +90,8 @@
 
             <ImageButton
                 android:id="@+id/surveySecondImage"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:background="@color/SurveyBackgroundColor"
                 android:scaleType="fitStart"
                 android:src="@drawable/option2_gate" />
@@ -116,8 +116,8 @@
 
             <ImageButton
                 android:id="@+id/surveyThirdImage"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:background="@color/SurveyBackgroundColor"
                 android:scaleType="fitStart"
                 android:src="@drawable/option3_grass" />
@@ -141,13 +141,11 @@
 
             <Button
                 android:id="@+id/surveyFourthImage"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:background="@color/SurveyButtonColor"
-                android:ellipsize="none"
-                android:scaleType="fitStart"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="dismissThanks"
                 android:text="@string/survey_button_text"
-                android:textColor="@color/SurveyButtonFontColor"
+                android:textColor="@color/SurveyFontColor"
                 android:textStyle="italic" />
 
         </LinearLayout>
@@ -170,8 +168,8 @@
 
             <ImageButton
                 android:id="@+id/surveyFifthImage"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:background="@color/SurveyBackgroundColor"
                 android:scaleType="fitStart" />
 

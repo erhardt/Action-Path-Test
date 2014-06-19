@@ -97,8 +97,8 @@ public class SurveyActivity extends FragmentActivity {
 		// Get reusable colors
 		int bgColor = getResources().getColor(R.color.SurveyBackgroundColor);
 		int fontColor = getResources().getColor(R.color.SurveyFontColor);
-		int buttonColor = getResources().getColor(R.color.SurveyButtonColor);
-		int buttonFontColor = getResources().getColor(R.color.SurveyButtonFontColor);
+		//int buttonColor = getResources().getColor(R.color.SurveyButtonColor);
+		//int buttonFontColor = getResources().getColor(R.color.SurveyButtonFontColor);
 		
 		// Instantiate ScrollView layout for survey page
 		ScrollView surveyLayout = new ScrollView(this);
@@ -153,8 +153,8 @@ public class SurveyActivity extends FragmentActivity {
 			// Create images to click on for each response if used
 			if (images.length != 0){
 				ImageButton responseImage = new ImageButton(this);
-				responseImage.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, imageHeight));
-				responseImage.setBackgroundColor(bgColor);
+				responseImage.setId(i);
+				responseImage.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, imageHeight));
 				responseImage.setAdjustViewBounds(true); // corrects for padding added by scaling
 				responseImage.setScaleType(ScaleType.FIT_START);
 				responseImage.setImageResource(getResources().getIdentifier(images[i], "drawable", getPackageName()));
@@ -165,7 +165,7 @@ public class SurveyActivity extends FragmentActivity {
 						Intent loggerServiceIntent = new Intent(arg0.getContext(),LoggerService.class);
 				        loggerServiceIntent.putExtra("logType", "actionLocation");
 				     	loggerServiceIntent.putExtra("action", "SurveyResponse");
-				        loggerServiceIntent.putExtra("data", ""); //eventually include the survey data
+				        loggerServiceIntent.putExtra("data", "response_" + (arg0.getId()+1)); //eventually include the survey data
 				    	startService(loggerServiceIntent);
 						
 						
@@ -180,9 +180,9 @@ public class SurveyActivity extends FragmentActivity {
 
 				// Create plain buttons if no images included
 				Button responseButton = new Button(this);
+				responseButton.setId(i);
 				responseButton.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-				responseButton.setBackgroundColor(buttonColor);
-				responseButton.setTextColor(buttonFontColor);
+				responseButton.setTextColor(fontColor);
 				responseButton.setText("vote " + alphabet);
 				responseButton.setOnClickListener(new View.OnClickListener() {
 					@Override // make button clickable
@@ -191,7 +191,7 @@ public class SurveyActivity extends FragmentActivity {
 						Intent loggerServiceIntent = new Intent(arg0.getContext(),LoggerService.class);
 				        loggerServiceIntent.putExtra("logType", "actionLocation");
 				     	loggerServiceIntent.putExtra("action", "SurveyResponse");
-				        loggerServiceIntent.putExtra("data", ""); //eventually include the survey data
+				        loggerServiceIntent.putExtra("data", "response_" + (arg0.getId()+1)); //eventually include the survey data
 				    	startService(loggerServiceIntent);
 						
 						// Load the Thanks page
