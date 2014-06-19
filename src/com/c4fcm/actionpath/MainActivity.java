@@ -200,7 +200,7 @@ public class MainActivity extends FragmentActivity {
     	
     	// CREATE A LOCATION LOG
     	Intent loggerServiceIntent = new Intent(this,LoggerService.class);
-    	loggerServiceIntent.putExtra("logType", "action");
+    	loggerServiceIntent.putExtra("logType", "actionLocation");
     	loggerServiceIntent.putExtra("action", "LoadedLatestActions");
     	loggerServiceIntent.putExtra("data", "");
     	startService(loggerServiceIntent);

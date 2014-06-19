@@ -68,6 +68,7 @@ GooglePlayServicesClient.OnConnectionFailedListener{
 			String action = intent.getStringExtra("action");
 			String data = intent.getStringExtra("data");
 			queueLocation(action, data);
+			mLocationClient.connect();
 		}
 	}
 	
