@@ -155,7 +155,7 @@ public class ReceiveTransitionsIntentService extends IntentService {
     	
     	// create the notification
     	Builder notificationBuilder = new Notification.Builder(this);
-    	notificationBuilder.setContentTitle("Action: " + getString(R.string.active_action))
+    	notificationBuilder.setContentTitle("Action: " + surveyKey)
     	//notificationBuilder.setContentTitle("ActionPath " + transitionType + " " + TextUtils.join(GeofenceUtils.GEOFENCE_ID_DELIMITER,ids))
     	// Notification title
     	// not sure how to make this appear, or where it does appear
@@ -165,8 +165,8 @@ public class ReceiveTransitionsIntentService extends IntentService {
     	// Set your notification icon here.
     	
     	 //TODO: ADD THESE BACK IN WHEN NEEDED
-    	.addAction(R.drawable.ic_notification, "Go There", pi)
-    	.addAction(
+    	.addAction(R.drawable.ic_notification, "Take Action", pi);
+    	/*.addAction(
     			R.drawable.ic_stat_snooze,
     			"Snooze", pi); // TODO: Make this an actual snooze button*/
     	
@@ -175,7 +175,7 @@ public class ReceiveTransitionsIntentService extends IntentService {
     	
     	// Now create the Big picture notification.
     	Notification notification = new Notification.BigTextStyle(notificationBuilder)
-    		.bigText("Fill in this awesome form!").build();
+    		.bigText("Take the survey!").build();
     //	Notification notification = new Notification.BigPictureStyle(notificationBuilder).build();
     	/*.bigPicture(
     			BitmapFactory.decodeResource(getResources(),

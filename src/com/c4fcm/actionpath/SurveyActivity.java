@@ -43,25 +43,54 @@ public class SurveyActivity extends FragmentActivity {
 		String surveyKey2 = "\"MIT Media Lab\"";
 		String question2 = "\"What addition to the 3rd Floor Cafe would you most like to see?\"";
 		String responses2 = "\"Popcorn Machine\", \"Pizza Oven\", \"Kegerator\"";
-		String images2 = ""; // empty array for testing		
+		String images2 = ""; // empty array for testing	
+		
+		String surveyKey3 = "\"MIT East Campus Gateway\"";
+		String question3 = "\"Which redevelopment option do you like most?\"";
+		String responses3 = "\"Renovation of E38 + New Transparent T Headhouse\", \"New Narrower Multi-use Building + New Transparent T Headhouse\"";
+		String images3 = "\"kendall_response1\", \"kendall_response2\"";
+		
+		String surveyKey4 = "\"Vail Court\"";
+		String question4 = "\"What should the owners of Vail Court do with their property?\"";
+		String responses4 = "\"Sell it to city or developers for new apartments\", \"Sell it to city or developers for new office space\", \"Pave it over and add more paid parking spots\"";
+		String images4 = ""; // empty array for testing	
+		
+		String surveyKey5 = "\"Mass Ave Food Trucks\"";
+		String question5 = "\"What cuisines would you like to see added as food trucks here?\"";
+		String responses5 = "\"Korean BBQ\", \"Falafel\", \"Pretzels\"";
+		String images5 = ""; // empty array for testing	
 		
 		// ----------------------------------------- //
 		
 		try {	
-			JSONObject surveys = new JSONObject(
-					"{" + surveyKey1 + ": {"
-						+ "\"question\": " + question1 + ","
-						+ "\"responses\": [" + responses1 + "],"
-						+ "\"images\": [" + images1 + "]},"
-					+ surveyKey2 + ": {"
-						+ "\"question\": " + question2 + ","
-						+ "\"responses\": [" + responses2 + "],"
-						+ "\"images\": [" + images2 + "]}"
-					+ "}");
 			
+			String jsonString = "{" + surveyKey1 + ": {"
+					+ "\"question\": " + question1 + ","
+					+ "\"responses\": [" + responses1 + "],"
+					+ "\"images\": [" + images1 + "]},"
+				+ surveyKey2 + ": {"
+					+ "\"question\": " + question2 + ","
+					+ "\"responses\": [" + responses2 + "],"
+					+ "\"images\": [" + images2 + "]},"
+				+ surveyKey3 + ": {"
+					+ "\"question\": " + question3 + ","
+					+ "\"responses\": [" + responses3 + "],"
+					+ "\"images\": [" + images3 + "]},"
+				+ surveyKey4 + ": {"
+					+ "\"question\": " + question4 + ","
+					+ "\"responses\": [" + responses4 + "],"
+					+ "\"images\": [" + images4 + "]},"
+				+ surveyKey5 + ": {"
+					+ "\"question\": " + question5 + ","
+					+ "\"responses\": [" + responses5 + "],"
+					+ "\"images\": [" + images5 + "]}"	
+				+ "}";
 			
-	
+			Log.i("JSONString", jsonString);
+			
+			JSONObject surveys = new JSONObject(jsonString);
 
+			Log.i("JSONDebug", "survey object created");
 			JSONObject currentSurvey = surveys.getJSONObject(surveyKey);
 			String currentQuestion = currentSurvey.getString("question");
 			JSONArray responsesJSON = currentSurvey.getJSONArray("responses");
@@ -69,6 +98,9 @@ public class SurveyActivity extends FragmentActivity {
 			String[] currentResponses = new String[responsesJSON.length()];
 			String[] currentImages = new String[imagesJSON.length()];
 		
+			
+			Log.i("JSONDebug", "next thing after survey block");
+
 			for (int i=0; i<responsesJSON.length(); i++) {
 				currentResponses[i] = responsesJSON.get(i).toString();
 				
@@ -82,7 +114,7 @@ public class SurveyActivity extends FragmentActivity {
 			setContentView(surveyLayout);
 		}
 		catch (JSONException e) {
-			Log.e("SurveyActivity.java","JSONException");
+			Log.e("SurveyActivity.java","JSONException" + e.getStackTrace().toString());
 		}
 	}
 	
@@ -154,6 +186,8 @@ public class SurveyActivity extends FragmentActivity {
 			if (images.length != 0){
 				ImageButton responseImage = new ImageButton(this);
 				responseImage.setId(i);
+				responseImage.setBackgroundColor(bgColor);
+				responseImage.setPadding(0, 0, 0, 0);
 				responseImage.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, imageHeight));
 				responseImage.setAdjustViewBounds(true); // corrects for padding added by scaling
 				responseImage.setScaleType(ScaleType.FIT_START);
